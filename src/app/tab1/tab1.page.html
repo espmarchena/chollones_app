@@ -1,17 +1,38 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title class="header-white"><b>CHOLLONES</b></ion-title>
+    <ion-buttons slot="end">
+      <ion-icon name="search-outline" color="light" style="font-size: 1.5rem; margin-right: 15px;"></ion-icon>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding-top bg-gray">
+  <ion-card *ngFor="let chollo of chollos" class="chollo-card">
+    
+    <ion-card-content>
+      <div class="badges-container">
+        <ion-badge class="badge-nuevo">Nuevo</ion-badge>
+        <ion-badge class="badge-caliente">+ CALIENTE</ion-badge>
+      </div>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+      <div class="categoria">{{ chollo.proveedores?.nombre || 'Nagashop' }}</div>
+      
+       <div class="image-container">
+         <img [src]="chollo.imagen_url" alt="{{ chollo.titulo }}" />
+       </div>
+
+      <div class="titulo-chollo">{{ chollo.titulo }}</div>
+      
+      <div class="precio-chollo">{{ chollo.precio_actual }}€</div>
+
+      <div class="banner-puntos">
+        + {{ chollo.precio_actual }} ¢
+      </div>
+
+      <ion-button expand="block" class="btn-carrito" color="primary">
+        Añadir al carrito
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

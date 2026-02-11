@@ -1,0 +1,94 @@
+// Estilo para el texto blanco del menú
+.header-white {
+  color: white !important;
+}
+
+ion-content.bg-gray {
+  --background: #f4f5f8;
+}
+
+ion-card.chollo-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 10px 16px 20px 16px;
+  background: white;
+}
+
+ion-card-content {
+  padding: 16px;
+  text-align: left;
+}
+
+// Badges
+.badges-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+ion-badge {
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.badge-nuevo {
+  --background: var(--ion-color-secondary); // Turquesa
+  --color: white;
+}
+
+.badge-caliente {
+  --background: var(--ion-color-primary); // Coral
+  --color: white;
+}
+
+.categoria {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 15px;
+}
+
+.image-container {
+  text-align: center;
+  margin-bottom: 15px;
+  img {
+    max-height: 200px;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+.titulo-chollo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.precio-chollo {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ion-color-primary); 
+  margin-bottom: 15px;
+}
+
+// --- La barra turquesa con el precio en blanco ---
+.banner-puntos {
+  background-color: var(--ion-color-secondary); 
+  color: white !important; // Fuerza el color blanco para el precio
+  text-align: center;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.btn-carrito {
+  --border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  height: 50px;
+  text-transform: none;
+}
