@@ -1,38 +1,43 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="primary">
-    <ion-title class="header-white"><b>CHOLLONES</b></ion-title>
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-title style="font-weight: 800; letter-spacing: -0.5px;">CHOLLONES</ion-title>
     <ion-buttons slot="end">
-      <ion-icon name="search-outline" color="light" style="font-size: 1.5rem; margin-right: 15px;"></ion-icon>
+      <ion-button>
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding-top bg-gray">
+<ion-content>
   <ion-card *ngFor="let chollo of chollos" class="chollo-card">
-    
-    <ion-card-content>
-      <div class="badges-container">
-        <ion-badge class="badge-nuevo">Nuevo</ion-badge>
-        <ion-badge class="badge-caliente">+ CALIENTE</ion-badge>
-      </div>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <div class="image-container">
+            <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
+            <ion-badge color="secondary" class="temp-badge">
+              +{{ chollo.puntos?.estado || '0' }}°
+            </ion-badge>
+          </div>
+        </ion-col>
 
-      <div class="categoria">{{ chollo.proveedores?.nombre || 'Nagashop' }}</div>
-      
-       <div class="image-container">
-         <img [src]="chollo.imagen_url" alt="{{ chollo.titulo }}" />
-       </div>
-
-      <div class="titulo-chollo">{{ chollo.titulo }}</div>
-      
-      <div class="precio-chollo">{{ chollo.precio_actual }}€</div>
-
-      <div class="banner-puntos">
-        + {{ chollo.precio_actual }} ¢
-      </div>
-
-      <ion-button expand="block" class="btn-carrito" color="primary">
-        Añadir al carrito
-      </ion-button>
-    </ion-card-content>
+        <ion-col size="8">
+          <ion-text color="medium">
+            <p class="provider-text">{{ chollo.proveedores?.nombre }}</p>
+          </ion-text>
+          <h3 class="chollo-title">{{ chollo.titulo }}</h3>
+          
+          <div class="price-container">
+            <span class="current-price">{{ chollo.precio_actual }}€</span>
+            <span class="old-price" *ngIf="chollo.precio_original">{{ chollo.precio_original }}€</span>
+          </div>
+          
+          <ion-button [href]="chollo.url" target="_blank" fill="clear" size="small" class="go-button">
+            Ir al chollo <ion-icon name="open-outline" slot="end"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-card>
 </ion-content>

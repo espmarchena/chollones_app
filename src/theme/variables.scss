@@ -1,21 +1,33 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
-
 :root {
-  /* El Rojo Coral de la cabecera */
+  /* Rojo Coral Chollones */
   --ion-color-primary: #f05a5e;
   --ion-color-primary-rgb: 240, 90, 94;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-shade: #d34f53;
   --ion-color-primary-tint: #f26b6e;
 
-  /* El Verde Menta de los botones de puntos */
+  /* Verde Menta (Puntos/Temperatura) */
   --ion-color-secondary: #49c5b6;
   --ion-color-secondary-rgb: 73, 197, 182;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-shade: #40ad100;
   --ion-color-secondary-tint: #5bd3c5;
 
-  /* Fondo gris muy neutro */
+  /* Fondo y Grises */
   --ion-background-color: #fcfcfc;
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+}
+
+/* Estilo global para tarjetas de chollos */
+ion-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  border: 1px solid #f0f0f0;
+  margin: 12px !important;
+}
+
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: white;
 }

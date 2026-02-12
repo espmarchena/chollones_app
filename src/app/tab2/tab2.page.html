@@ -1,17 +1,27 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+  <ion-toolbar style="--background: #FF4500; --color: white;">
+    <ion-title>Publicar Chollo</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  
+  <div style="background: #f4f4f4; padding: 10px; border-radius: 10px; margin-bottom: 20px;">
+    <ion-item lines="none" style="--background: transparent;">
+      <ion-label position="stacked">¿No ves la tienda? Añádela:</ion-label>
+      <ion-input [(ngModel)]="nombreNuevoProveedor" placeholder="Ej: MediaMarkt"></ion-input>
+    </ion-item>
+    <ion-button fill="outline" size="small" expand="block" (click)="guardarProveedor()" color="dark">
+      Añadir Tienda
+    </ion-button>
+  </div>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <hr> <ion-item>
+    <ion-label position="stacked">Título del producto</ion-label>
+    <ion-input [(ngModel)]="nuevoChollo.titulo" placeholder="Ej: PlayStation 5"></ion-input>
+  </ion-item>
+  
+  <ion-button expand="block" (click)="guardarChollo()" style="--background: #FF4500; margin-top: 20px;">
+    PUBLICAR CHOLLO
+  </ion-button>
 </ion-content>
