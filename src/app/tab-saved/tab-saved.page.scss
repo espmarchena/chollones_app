@@ -1,3 +1,45 @@
+// Empty State Styles
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+    padding: 32px;
+    text-align: center;
+
+    .illustration {
+        background: rgba(var(--ion-color-primary-rgb), 0.1);
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+
+        ion-icon {
+            font-size: 64px;
+            color: var(--ion-color-primary);
+        }
+    }
+
+    h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ion-color-dark);
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 0.95rem;
+        color: var(--ion-color-medium);
+        max-width: 280px;
+        line-height: 1.5;
+    }
+}
+
+// Deal Card Styles (Reused)
 .deal-card {
     margin: 10px 0;
     border-radius: 12px;
@@ -39,6 +81,8 @@
             z-index: 10;
             letter-spacing: 0.5px;
         }
+
+
 
         .favorite-icon {
             position: absolute;

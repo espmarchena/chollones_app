@@ -1,0 +1,65 @@
+<ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+        <ion-title>Guardados</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">Guardados</ion-title>
+        </ion-toolbar>
+    </ion-header>
+
+    <ng-container *ngIf="savedDeals$ | async as savedDeals">
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="savedDeals.length === 0">
+            <div class="illustration">
+                <ion-icon name="heart-outline"></ion-icon>
+            </div>
+            <h3>Tu lista de deseos está vacía</h3>
+            <p>Guarda los chollos que más te gusten para no perderlos de vista.</p>
+        </div>
+
+        <!-- Saved Deals List -->
+        <ion-grid *ngIf="savedDeals.length > 0">
+            <ion-row>
+                <ion-col size="12" size-md="6" *ngFor="let deal of savedDeals">
+                    <ion-card class="deal-card">
+                        <div class="card-layout">
+                            <div class="image-container">
+                                <img [src]="deal.image" [alt]="deal.title" />
+                                <ion-badge *ngIf="deal.isNew" color="secondary" class="new-badge">NUEVO</ion-badge>
+
+                                <div class="favorite-icon" (click)="toggleFavorite(deal)">
+                                    <ion-icon name="heart" color="danger"></ion-icon>
+                                </div>
+                            </div>
+
+                            <div class="content-container">
+                                <div class="store-name">{{ deal.store }}</div>
+                                <div class="deal-title">{{ deal.title }}</div>
+
+                                <div class="price-container">
+                                    <span class="current-price">{{ deal.price | currency:'EUR':'symbol':'1.2-2'
+                                        }}</span>
+                                    <span class="original-price">{{ deal.originalPrice | currency:'EUR':'symbol':'1.2-2'
+                                        }}</span>
+                                </div>
+
+                                <div class="actions">
+                                    <ion-button class="gradient-button" expand="block" size="small" [href]="deal.url"
+                                        target="_blank">
+                                        IR AL CHOLLO
+                                        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+                                    </ion-button>
+                                </div>
+                            </div>
+                        </div>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ng-container>
+
+</ion-content>

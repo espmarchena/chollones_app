@@ -1,17 +1,53 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Tab 1
+      Chollones
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" color="light">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Chollones</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" *ngFor="let deal of deals$ | async">
+        <ion-card class="deal-card">
+          <div class="card-layout">
+            <div class="image-container">
+              <img [src]="deal.image" [alt]="deal.title" />
+              <!-- NEW Badge -->
+              <ion-badge *ngIf="deal.isNew" color="secondary" class="new-badge">NUEVO</ion-badge>
+              <!-- Heart Icon Top-Right of Image -->
+              <div class="favorite-icon" (click)="toggleFavorite(deal)">
+                <ion-icon [name]="deal.isFavorite ? 'heart' : 'heart-outline'"
+                  [color]="deal.isFavorite ? 'danger' : 'medium'"></ion-icon>
+              </div>
+            </div>
+
+            <div class="content-container">
+              <div class="store-name">{{ deal.store }}</div>
+              <div class="deal-title">{{ deal.title }}</div>
+
+              <div class="price-container">
+                <span class="current-price">{{ deal.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+                <span class="original-price">{{ deal.originalPrice | currency:'EUR':'symbol':'1.2-2' }}</span>
+              </div>
+
+              <div class="actions">
+                <ion-button class="gradient-button" expand="block" size="small" [href]="deal.url" target="_blank">
+                  IR AL CHOLLO
+                  <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
