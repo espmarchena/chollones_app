@@ -29,7 +29,7 @@ export class TabSavedPage implements ViewWillEnter {
       if (!this.isLoading) {
         // Filter out chollos that are no longer favorites
         // This handles if I un-heart in Tab1
-        this.savedChollos = this.savedChollos.filter(chollo => favorites.has(chollo.id));
+        this.savedChollos = this.savedChollos.filter(chollo => favorites.has(String(chollo.id)));
 
         // Note: This logic only handles removals.
         // If I add a favorite in Tab1, it won't appear here until I reload (ionViewWillEnter)
