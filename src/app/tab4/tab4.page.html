@@ -1,33 +1,33 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>Listado de Chollos</ion-title>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-searchbar 
-      placeholder="Buscar ofertas..." 
-      (ionInput)="buscar($event)">
-    </ion-searchbar>
+  <ion-toolbar color="primary">
+    <ion-searchbar placeholder="Buscar ofertas..." (ionInput)="buscar($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list lines="full">
-    <ion-item *ngFor="let chollo of filtrados">
+    <ion-item *ngFor="let chollo of filtrados" class="chollo-item">
       <ion-thumbnail slot="start">
         <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
       </ion-thumbnail>
       
       <ion-label>
         <h2>{{ chollo.titulo }}</h2>
-        <p>
-          <span style="color: var(--ion-color-danger); font-weight: bold;">
-            {{ chollo.precio_actual }}€
-          </span>
-          <span *ngIf="chollo.precio_original" style="text-decoration: line-through; margin-left: 8px; font-size: 0.8em;">
-            {{ chollo.precio_original }}€
-          </span>
+        
+        <p class="info-row">
+          <ion-icon name="storefront-outline" color="primary"></ion-icon>
+          <span class="vendor-text">{{ chollo.proveedores?.nombre || 'Tienda' }}</span>
         </p>
-        <p>{{ chollo.proveedores?.nombre }}</p>
+
+        <p class="description-text">{{ chollo.descripcion }}</p>
+
+        <div class="price-row">
+          <span class="current-price">{{ chollo.precio_actual }}€</span>
+          <span class="old-price" *ngIf="chollo.precio_original">{{ chollo.precio_original }}€</span>
+        </div>
       </ion-label>
 
       <ion-badge slot="end" color="danger" *ngIf="calcDescuento(chollo) > 0">

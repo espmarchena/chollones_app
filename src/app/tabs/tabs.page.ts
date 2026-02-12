@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { 
+  IonTabs, 
+  IonTabBar, 
+  IonTabButton, 
+  IonIcon, 
+  IonLabel, 
+  IonRouterOutlet // 1. Debe estar aquí
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
-  flameOutline, 
-  gridOutline, 
-  heartOutline, 
-  notificationsOutline, 
-  personOutline 
+  flameOutline, gridOutline, heartOutline, notificationsOutline, personOutline 
 } from 'ionicons/icons';
 
 @Component({
@@ -14,17 +17,17 @@ import {
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
   standalone: true,
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
+  imports: [
+    IonTabs, 
+    IonTabBar, 
+    IonTabButton, 
+    IonIcon, 
+    IonLabel, 
+    IonRouterOutlet // 2. Y DEBE estar aquí
+  ],
 })
 export class TabsPage {
   constructor() {
-    // Registramos los 5 iconos aquí
-    addIcons({ 
-      flameOutline, 
-      gridOutline, 
-      heartOutline, 
-      notificationsOutline, 
-      personOutline 
-    });
+    addIcons({ flameOutline, gridOutline, heartOutline, notificationsOutline, personOutline });
   }
 }

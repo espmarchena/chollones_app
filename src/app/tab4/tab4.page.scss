@@ -1,0 +1,115 @@
+// Contenedor principal con fondo gris claro
+ion-content {
+  --background: #f8f9fa;
+}
+
+// Estilo de la lista sin fondo para que resalten las tarjetas
+ion-list {
+  background: transparent;
+  padding: 10px;
+}
+
+// Tarjeta de cada chollo con diseño moderno y sombras
+.chollo-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background: white;
+  position: relative; // Necesario para el posicionamiento del badge
+
+  ion-thumbnail {
+    width: 100px;
+    height: 100px;
+    margin: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    
+    img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  ion-label {
+    margin: 12px 12px 12px 0;
+
+    h2 {
+      font-weight: 700;
+      color: #2c3e50;
+      font-size: 1.05rem;
+      white-space: normal; // El título puede ocupar varias líneas
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    // Estilo para el nombre de la tienda/proveedor
+    .proveedor-nombre {
+      color: var(--ion-color-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+
+      ion-icon {
+        font-size: 14px;
+      }
+    }
+
+    // Estilo para la descripción limitada a 1 línea
+    .descripcion-breve {
+      font-size: 0.82rem;
+      color: #666;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.3;
+    }
+
+    // Contenedor de precios
+    .precio-container {
+      display: flex;
+      align-items: center;
+      margin-top: 6px;
+
+      .precio-actual {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--ion-color-danger);
+      }
+
+      .precio-original {
+        text-decoration: line-through;
+        margin-left: 10px;
+        font-size: 0.85rem;
+        color: #999;
+      }
+    }
+  }
+
+  // Estilo del porcentaje de descuento (Badge)
+  ion-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+  }
+}
+
+// Personalización del buscador superior
+ion-searchbar {
+  --border-radius: 12px;
+  --box-shadow: none;
+  --background: #ffffff;
+  padding: 10px 16px;
+}

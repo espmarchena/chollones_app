@@ -25,7 +25,9 @@ import {
   bagOutline, 
   flameOutline,
   timeOutline,
-  openOutline 
+  openOutline,
+  gridOutline,
+  notificationsOutline
 } from 'ionicons/icons';
 
 import { SupabaseService } from '../services/supabase.service';
@@ -54,32 +56,28 @@ import { SupabaseService } from '../services/supabase.service';
   ],
 })
 export class Tab1Page implements OnInit {
-  // Propiedades básicas para la interfaz
+  // Propiedades para la interfaz
   cartCount = 0;
   bannerUrl = 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1400&auto=format&fit=crop';
 
-  // Listados de datos requeridos por el HTML (Corrige errores Imágenes 5 y 7)
+  // Enlaces rápidos (Asegúrate de que el HTML use estas propiedades)
   quickLinks = [
     { title: 'Ofertas del día', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' },
     { title: 'Servicios', img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=600&auto=format&fit=crop' },
     { title: 'Deporte -20%', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop' }
   ];
 
+  // Listados de datos (Soluciona errores de compilación)
   productosPopulares: any[] = []; 
   chollosFiltrados: any[] = [];  
-  categorias = [
-    { nombre: 'Belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
-    { nombre: 'Moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
-    { nombre: 'Mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
-    { nombre: 'Cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png' },
-    { nombre: 'Marketing', img: 'https://cdn-icons-png.flaticon.com/512/3135/3135683.png' },
-    { nombre: 'Juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
-  ];
+  categorias: any[] = [];
 
   constructor(private supabaseService: SupabaseService) {
+    // Registramos todos los iconos que usa la App
     addIcons({ 
       searchOutline, heartOutline, personOutline, bagOutline, 
-      flameOutline, timeOutline, openOutline 
+      flameOutline, timeOutline, openOutline, gridOutline, 
+      notificationsOutline 
     });
   }
 
@@ -89,15 +87,16 @@ export class Tab1Page implements OnInit {
 
   async cargarDatos() {
     try {
+      // Llamada al servicio que creamos para conectar con Supabase
       const res = await this.supabaseService.getChollos();
       
-      // Mapeamos los datos de Supabase al formato que usa tu HTML
+      // Transformamos los datos de la DB al formato que espera el HTML
       const dataMapeada = res.map((c: any) => ({
         ...c,
-        titulo: c.titulo,
-        precioActual: c.precio_actual,
+        titulo: c.titulo,               // Mapeo según esquema Imagen 1
+        precioActual: c.precio_actual,   // Mapeo según esquema Imagen 1
         precioOriginal: c.precio_original,
-        imagen: c.imagen_url,
+        imagen: c.imagen_url,           // Mapeo según esquema Imagen 1
         proveedor: c.proveedores?.nombre,
         nuevo: this.esReciente(c.created_at)
       }));
@@ -105,11 +104,11 @@ export class Tab1Page implements OnInit {
       this.productosPopulares = dataMapeada;
       this.chollosFiltrados = [...dataMapeada];
     } catch (error) {
-      console.error('Error al cargar datos:', error);
+      console.error('Error al cargar datos de Supabase:', error);
     }
   }
 
-  // Función de búsqueda (Corrige error Imagen 6)
+  // Lógica del buscador (Soluciona error Imagen 6)
   onSearch(ev: any) {
     const q = (ev?.target?.value || '').toLowerCase().trim();
     
@@ -124,14 +123,14 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  // Utilidades requeridas por el HTML
+  // Verifica si el chollo se subió hace menos de 24 horas
   esReciente(fecha: string): boolean {
     if (!fecha) return false;
     const horas = (new Date().getTime() - new Date(fecha).getTime()) / (1000 * 60 * 60);
     return horas < 24;
   }
 
-  // Ajustado para recibir el objeto chollo completo (Corrige error Imagen 7)
+  // Calcula el porcentaje de ahorro (Soluciona error Imagen 7)
   calcDescuento(c: any): number {
     const actual = Number(c?.precio_actual || 0);
     const original = Number(c?.precio_original || 0);
