@@ -16,11 +16,11 @@ export class SupabaseService {
 
   async getChollos() {
     const { data, error } = await this.supabase
-      .from('chollos') // Asegúrate de que este sea el nombre de tu tabla
-      .select('*')
+      .from('chollos')
+      .select('*, proveedores(nombre)') // Esto es clave para traer el nombre del proveedor
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return data;
   }
 }
