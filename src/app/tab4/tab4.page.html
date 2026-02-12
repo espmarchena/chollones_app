@@ -29,7 +29,7 @@
 
         <div class="savings-container" *ngIf="chollo.precio_original && chollo.precio_original > chollo.precio_actual">
             <span class="old-price">{{ chollo.precio_original }}€</span>
-            <span class="savings-amount">Ahorra: {{ (chollo.precio_original - chollo.precio_actual) }}€</span>
+            <span class="savings-amount">Ahorra: {{ (chollo.precio_original - chollo.precio_actual) | number:'1.2-2' }}€</span>
         </div>
         </div>
       </ion-label>

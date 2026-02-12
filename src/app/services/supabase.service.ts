@@ -14,6 +14,16 @@ export class SupabaseService {
     );
   }
 
+    // Obtener o generar un ID de usuario temporal único para este dispositivo
+  private getUserId(): string {
+    let userId = localStorage.getItem('app_user_id');
+    if (!userId) {
+      userId = 'user_' + Math.random().toString(36).substring(2, 15);
+      localStorage.setItem('app_user_id', userId);
+    }
+    return userId;
+  }
+
   async getChollos() {
     const { data, error } = await this.supabase
       .from('chollos')
