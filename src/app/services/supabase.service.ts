@@ -17,7 +17,12 @@ export class SupabaseService {
   async getChollos() {
     const { data, error } = await this.supabase
       .from('chollos')
-      .select('*, proveedores(nombre)') // Esto es clave para traer el nombre del proveedor
+      .select(`
+        *,
+        proveedores (
+          nombre
+        )
+      `) // Esto crea el objeto 'proveedores' que tu HTML necesita
       .order('created_at', { ascending: false });
 
     if (error) throw error;

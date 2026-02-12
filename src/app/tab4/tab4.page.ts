@@ -34,7 +34,8 @@ export class Tab4Page implements OnInit {
   async cargarChollos() {
     try {
       // Usamos el nombre correcto de la función definido en tu servicio
-      const res = await this.supabaseService.getChollos(); 
+      const res = await this.supabaseService.getChollos();
+      console.log('Datos recibidos:', res); // Mira la consola (F12) para ver si viene "proveedores"
       this.listadoChollos = res;
       this.filtrados = [...res];
     } catch (error) {
