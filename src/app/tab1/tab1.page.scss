@@ -283,8 +283,151 @@ ion-button {
 .fav {
   text-align: center;
   margin-top: 10px;
-  font-size: 18px;
-  opacity: 0.6;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--ion-color-primary);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Estilos para chollos cards */
+.cards-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.chollo-card {
+  min-width: 260px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+  overflow: hidden;
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--ion-color-primary);
+  color: #fff;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  z-index: 2;
+
+  &.badge-hot {
+    background: #ff6b6b;
+  }
+}
+
+.fav-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--ion-color-primary);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.cover {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  background: #f2f2f2;
+}
+
+.meta {
+  padding: 12px;
+}
+
+.provider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.prices {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 10px;
+
+  .now {
+    color: var(--ion-color-primary);
+    font-weight: 900;
+    font-size: 18px;
+  }
+
+  .old {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 13px;
+  }
+}
+
+.btn-add {
+  width: 100%;
+  border: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--ion-color-primary);
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
 }
 
 /* Categorías strip */

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // Importar Router
 import {
   IonHeader,
   IonToolbar,
@@ -18,17 +19,19 @@ import {
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { 
-  searchOutline, 
-  heartOutline, 
-  personOutline, 
-  bagOutline, 
+import {
+  searchOutline,
+  heartOutline,
+  heart,
+  personOutline,
+  bagOutline,
   flameOutline,
   timeOutline,
-  openOutline 
+  openOutline
 } from 'ionicons/icons';
 
 import { SupabaseService } from '../services/supabase.service';
+import { FavoritosEventService } from '../services/favoritos-event.service';
 
 @Component({
   selector: 'app-tab1',
@@ -65,8 +68,8 @@ export class Tab1Page implements OnInit {
     { title: 'Deporte -20%', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop' }
   ];
 
-  productosPopulares: any[] = []; 
-  chollosFiltrados: any[] = [];  
+  productosPopulares: any[] = [];
+  chollosFiltrados: any[] = [];
   categorias = [
     { nombre: 'Belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
     { nombre: 'Moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
@@ -76,21 +79,34 @@ export class Tab1Page implements OnInit {
     { nombre: 'Juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
   ];
 
-  constructor(private supabaseService: SupabaseService) {
-    addIcons({ 
-      searchOutline, heartOutline, personOutline, bagOutline, 
-      flameOutline, timeOutline, openOutline 
+  // Set para trackear IDs de favoritos
+  favoritosIds: Set<string> = new Set();
+
+  constructor(
+    private supabaseService: SupabaseService,
+    private favoritosEventService: FavoritosEventService,
+    private router: Router
+  ) {
+    addIcons({
+      searchOutline, heartOutline, heart, personOutline, bagOutline,
+      flameOutline, timeOutline, openOutline
     });
   }
 
   async ngOnInit() {
     await this.cargarDatos();
+    await this.cargarFavoritos();
+  }
+
+  // Recargar favoritos cuando vuelves a este tab
+  async ionViewWillEnter() {
+    await this.cargarFavoritos();
   }
 
   async cargarDatos() {
     try {
       const res = await this.supabaseService.getChollos();
-      
+
       // Mapeamos los datos de Supabase al formato que usa tu HTML
       const dataMapeada = res.map((c: any) => ({
         ...c,
@@ -109,19 +125,73 @@ export class Tab1Page implements OnInit {
     }
   }
 
+  async cargarFavoritos() {
+    try {
+      const ids = await this.supabaseService.getFavoritosIds();
+      this.favoritosIds = new Set(ids);
+    } catch (error) {
+      console.error('Error al cargar favoritos:', error);
+    }
+  }
+
   // Función de búsqueda (Corrige error Imagen 6)
   onSearch(ev: any) {
     const q = (ev?.target?.value || '').toLowerCase().trim();
-    
+
     if (!q) {
       this.chollosFiltrados = [...this.productosPopulares];
       return;
     }
 
     this.chollosFiltrados = this.productosPopulares.filter((p) => {
-      return (p.titulo || '').toLowerCase().includes(q) || 
-             (p.proveedor || '').toLowerCase().includes(q);
+      return (p.titulo || '').toLowerCase().includes(q) ||
+        (p.proveedor || '').toLowerCase().includes(q);
     });
+  }
+
+  // Navegar a la pestaña de guardados
+  irAGuardados() {
+    this.router.navigate(['/tabs/tab3']);
+  }
+
+  // Métodos para gestión de favoritos
+  async toggleFavorito(chollo: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const id = chollo.id;
+    const isFav = this.isFavorito(id);
+
+    // Optimistic UI update
+    if (isFav) {
+      this.favoritosIds.delete(id);
+    } else {
+      this.favoritosIds.add(id);
+    }
+
+    try {
+      if (isFav) {
+        await this.supabaseService.eliminarCholloFavorito(id);
+      } else {
+        await this.supabaseService.guardarCholloFavorito(id);
+      }
+
+      // Notificar a otros componentes
+      this.favoritosEventService.notificarCambio();
+    } catch (error) {
+      console.error('Error al gestionar favorito (revertiendo):', error);
+      // Revertir cambio si falla
+      if (isFav) {
+        this.favoritosIds.add(id);
+      } else {
+        this.favoritosIds.delete(id);
+      }
+    }
+  }
+
+  isFavorito(cholloId: string): boolean {
+    return this.favoritosIds.has(cholloId);
   }
 
   // Utilidades requeridas por el HTML
