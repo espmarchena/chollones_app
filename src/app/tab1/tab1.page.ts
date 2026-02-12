@@ -9,10 +9,24 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonBadge,
+  IonText
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { searchOutline, heartOutline, personOutline, bagOutline } from 'ionicons/icons';
+import { 
+  searchOutline, 
+  heartOutline, 
+  personOutline, 
+  bagOutline, 
+  flameOutline,
+  timeOutline,
+  openOutline
+} from 'ionicons/icons';
 
 import { SupabaseService } from '../services/supabase.service';
 
@@ -31,17 +45,22 @@ import { SupabaseService } from '../services/supabase.service';
     IonButtons,
     IonButton,
     IonIcon,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonCard,
+    IonBadge,
+    IonText
   ],
 })
 export class Tab1Page implements OnInit {
-  // Carrito (por ahora fijo)
+  // Carrito
   cartCount = 0;
 
-  // Banner (URL)
-  bannerUrl =
-    'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1400&auto=format&fit=crop';
+  // Banner
+  bannerUrl = 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1400&auto=format&fit=crop';
 
-  // Accesos rápidos (texto corto)
+  // Accesos rápidos
   quickLinks = [
     { title: 'Ofertas del día', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop' },
     { title: 'Camareras -35%', img: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=600&auto=format&fit=crop' },
@@ -49,51 +68,7 @@ export class Tab1Page implements OnInit {
     { title: 'Deporte -20%', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop' },
   ];
 
-  // Productos populares (tipo web)
-  productosPopulares = [
-    {
-      titulo: 'Pack Combo Total Body',
-      categoria: 'Servicios Estéticos',
-      proveedor: 'Centro Médico Estético Chic',
-      precioActual: 290,
-      precioOriginal: 510,
-      descuento: -43,
-      nuevo: true,
-      imagen: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-      titulo: 'Pack Dúo Perfecto',
-      categoria: 'Servicios Estéticos',
-      proveedor: 'Centro Médico Estético Chic',
-      precioActual: 99,
-      precioOriginal: 125,
-      descuento: -21,
-      nuevo: true,
-      imagen: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-      titulo: 'Tratamiento Capilar',
-      categoria: 'Belleza y bienestar',
-      proveedor: 'Alicia Cofrina',
-      precioActual: 59,
-      precioOriginal: null,
-      descuento: null,
-      nuevo: true,
-      imagen: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-      titulo: 'Pack Bodytop10',
-      categoria: 'Servicios Estéticos',
-      proveedor: 'Clínica Médico-Estética',
-      precioActual: 350,
-      precioOriginal: null,
-      descuento: null,
-      nuevo: true,
-      imagen: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1200&auto=format&fit=crop',
-    },
-  ];
-
-  // Categorías (fila horizontal)
+  // Categorías
   categorias = [
     { nombre: 'Belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
     { nombre: 'Moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
@@ -103,43 +78,75 @@ export class Tab1Page implements OnInit {
     { nombre: 'Juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
   ];
 
-  // Data real (supabase)
+  // Datos reales unificados con el esquema final
   chollos: any[] = [];
   chollosFiltrados: any[] = [];
 
   constructor(private supabaseService: SupabaseService) {
-    addIcons({ searchOutline, heartOutline, personOutline, bagOutline });
-  }
-
-  async ngOnInit() {
-    try {
-      this.chollos = await this.supabaseService.getChollos();
-      this.chollosFiltrados = this.chollos;
-    } catch (error) {
-      console.error('Error cargando chollos:', error);
-      this.chollos = [];
-      this.chollosFiltrados = [];
-    }
-  }
-
-  onSearch(ev: any) {
-    const q = (ev?.target?.value || '').toLowerCase().trim();
-    if (!q) {
-      this.chollosFiltrados = this.chollos;
-      return;
-    }
-    this.chollosFiltrados = this.chollos.filter((c) => {
-      const titulo = (c?.titulo || '').toLowerCase();
-      const desc = (c?.descripcion || '').toLowerCase();
-      const prov = (c?.proveedor?.nombre || '').toLowerCase();
-      return titulo.includes(q) || desc.includes(q) || prov.includes(q);
+    addIcons({ 
+      searchOutline, 
+      heartOutline, 
+      personOutline, 
+      bagOutline, 
+      flameOutline,
+      timeOutline,
+      openOutline
     });
   }
 
-  calcDescuento(c: any) {
+  async ngOnInit() {
+    await this.cargarChollos();
+  }
+
+  async cargarChollos() {
+    try {
+      const res = await this.supabaseService.getChollos();
+
+      // Mapeo exacto al esquema de la base de datos (Imagen 3)
+      this.chollos = res.map((c: any) => ({
+        ...c,
+        titulo: c.titulo,
+        precio: c.precio_actual,
+        precioOld: c.precio_original,
+        imagen: c.imagen_url,
+        tienda: c.proveedores?.nombre,
+        logoTienda: c.proveedores?.logo,
+        descuento: this.calcDescuento(c),
+        esNuevo: this.esReciente(c.created_at)
+      }));
+
+      this.chollosFiltrados = [...this.chollos];
+    } catch (error) {
+      console.error('Error cargando chollos desde Supabase:', error);
+    }
+  }
+
+  esReciente(fecha: string): boolean {
+    if (!fecha) return false;
+    const horas = (new Date().getTime() - new Date(fecha).getTime()) / (1000 * 60 * 60);
+    return horas < 24;
+  }
+
+  calcDescuento(c: any): number {
     const actual = Number(c?.precio_actual || 0);
     const original = Number(c?.precio_original || 0);
     if (!actual || !original || original <= actual) return 0;
     return Math.round(((original - actual) / original) * 100);
+  }
+
+  onSearch(ev: any) {
+    const q = (ev?.target?.value || '').toLowerCase().trim();
+    
+    if (!q) {
+      this.chollosFiltrados = [...this.chollos];
+      return;
+    }
+
+    this.chollosFiltrados = this.chollos.filter((c) => {
+      const titulo = (c?.titulo || '').toLowerCase();
+      const desc = (c?.descripcion || '').toLowerCase();
+      const tienda = (c?.tienda || '').toLowerCase();
+      return titulo.includes(q) || desc.includes(q) || tienda.includes(q);
+    });
   }
 }

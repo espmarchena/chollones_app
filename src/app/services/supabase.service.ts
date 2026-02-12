@@ -16,22 +16,11 @@ export class SupabaseService {
 
   async getChollos() {
     const { data, error } = await this.supabase
-      .from('chollos')
-      .select(`
-        id,
-        titulo,
-        descripcion,
-        precio_actual,
-        precio_original,
-        proveedores (nombre, logo),
-        puntos (estado)
-      `)
+      .from('chollos') // Asegúrate de que este sea el nombre de tu tabla
+      .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error en la consulta:', error);
-      throw error;
-    }
+    if (error) throw error;
     return data || [];
   }
 }
