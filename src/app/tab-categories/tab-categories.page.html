@@ -1,0 +1,83 @@
+<ion-header [translucent]="true">
+    <ion-toolbar color="primary">
+        <ion-title>Categorías</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+    <ion-header collapse="condense">
+        <ion-toolbar>
+            <ion-title size="large">Categorías</ion-title>
+        </ion-toolbar>
+    </ion-header>
+
+    <!-- Categories Grid -->
+    <div class="categories-container ion-padding-top">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="6" size-md="3" *ngFor="let cat of categorias">
+                    <div class="category-card" [class.selected]="selectedCategoryId === cat.id"
+                        (click)="selectCategory(cat.id)">
+                        <ion-icon [name]="getCategoryIcon(cat.nombre)"></ion-icon>
+                        <span>{{ cat.nombre }}</span>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+
+    <!-- Filtered Deals List -->
+    <div class="deals-list ion-padding-horizontal_">
+        <h3 class="section-title ion-padding-start" *ngIf="selectedCategoryId">
+            Ofertas Destacadas
+        </h3>
+
+        <ion-grid>
+            <ion-row>
+                <ion-col size="12" size-md="6" *ngFor="let chollo of chollos">
+                    <ion-card class="deal-card-horizontal">
+                        <div class="card-layout">
+                            <div class="image-wrapper">
+                                <img [src]="chollo.imagen_url || 'https://via.placeholder.com/150'"
+                                    [alt]="chollo.titulo" />
+                            </div>
+
+                            <div class="content-wrapper">
+                                <div class="deal-header">
+                                    <!-- Optional: Provider name if available in join -->
+                                    <span class="provider-name" *ngIf="chollo.proveedores?.nombre">
+                                        {{ chollo.proveedores.nombre }}
+                                    </span>
+                                </div>
+
+                                <h4 class="deal-title">{{ chollo.titulo }}</h4>
+
+                                <div class="price-section">
+                                    <span class="current-price">
+                                        {{ chollo.precio_actual | currency:'EUR':'symbol':'1.2-2' }}
+                                    </span>
+                                    <span class="original-price" *ngIf="chollo.precio_original">
+                                        {{ chollo.precio_original | currency:'EUR':'symbol':'1.2-2' }}
+                                    </span>
+                                </div>
+
+                                <div class="action-footer">
+                                    <ion-button expand="block" size="small" color="primary" class="view-deal-btn"
+                                        [href]="chollo.enlace_oferta" target="_blank">
+                                        VER OFERTA
+                                        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+                                    </ion-button>
+                                </div>
+                            </div>
+                        </div>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <!-- Empty State for Category -->
+        <div class="empty-state" *ngIf="chollos.length === 0 && selectedCategoryId">
+            <p>No hay ofertas disponibles en esta categoría.</p>
+        </div>
+    </div>
+</ion-content>
