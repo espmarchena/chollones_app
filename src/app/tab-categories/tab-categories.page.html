@@ -40,6 +40,10 @@
                             <div class="image-wrapper">
                                 <img [src]="chollo.imagen_url || 'https://via.placeholder.com/150'"
                                     [alt]="chollo.titulo" />
+                                <div class="favorite-icon" (click)="toggleFavorite(chollo)">
+                                    <ion-icon [name]="chollo.isFavorite ? 'heart' : 'heart-outline'"
+                                        [color]="chollo.isFavorite ? 'danger' : 'medium'"></ion-icon>
+                                </div>
                             </div>
 
                             <div class="content-wrapper">

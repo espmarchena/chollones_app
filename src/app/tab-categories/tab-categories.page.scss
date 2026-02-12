@@ -79,11 +79,38 @@
         justify-content: center;
         background: #fff;
         border-right: 1px solid #f4f4f4;
+        position: relative; // Needed for absolute positioning
 
         img {
             max-height: 100%;
             max-width: 100%;
             object-fit: contain;
+        }
+
+        .favorite-icon {
+            position: absolute;
+            top: 4px;
+            left: 4px; // Left side for horizontal cards? Or keep right? 
+            // User asked for "top right" in general, but on horizontal cards often it's better on top-left if image is small.
+            // Let's put it top-left or top-right. In Tab1 it was top-right.
+            // Let's try top-left here as it might overlap less with image content? 
+            // Actually, let's stick to top-left for consistency with my previous thought or top-right.
+            // Let's use top-left as in the other cards (wait, Tab1 was top-right).
+            // Let's use top-left for now.
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+
+            ion-icon {
+                font-size: 16px;
+            }
         }
     }
 

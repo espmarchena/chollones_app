@@ -11,47 +11,50 @@
         </ion-toolbar>
     </ion-header>
 
-    <ng-container *ngIf="savedDeals$ | async as savedDeals">
+    <div class="ion-padding" *ngIf="isLoading">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
         <!-- Empty State -->
-        <div class="empty-state" *ngIf="savedDeals.length === 0">
+        <div class="empty-state" *ngIf="savedChollos.length === 0">
             <div class="illustration">
-                <ion-icon name="heart-outline"></ion-icon>
+                <ion-icon name="heart-dislike"></ion-icon>
             </div>
-            <h3>Tu lista de deseos está vacía</h3>
-            <p>Guarda los chollos que más te gusten para no perderlos de vista.</p>
+            <h3>¿Aún no has guardado nada?</h3>
+            <p>Explora nuestros chollos y guarda los que más te gusten.</p>
+            <ion-button routerLink="/tabs/tab1" expand="block" class="explore-btn">
+                Explorar Chollos
+            </ion-button>
         </div>
 
         <!-- Saved Deals List -->
-        <ion-grid *ngIf="savedDeals.length > 0">
+        <ion-grid *ngIf="savedChollos.length > 0">
             <ion-row>
-                <ion-col size="12" size-md="6" *ngFor="let deal of savedDeals">
-                    <ion-card class="deal-card">
+                <ion-col size="12" size-md="6" *ngFor="let chollo of savedChollos">
+                    <ion-card class="saved-card">
                         <div class="card-layout">
-                            <div class="image-container">
-                                <img [src]="deal.image" [alt]="deal.title" />
-                                <ion-badge *ngIf="deal.isNew" color="secondary" class="new-badge">NUEVO</ion-badge>
-
-                                <div class="favorite-icon" (click)="toggleFavorite(deal)">
-                                    <ion-icon name="heart" color="danger"></ion-icon>
-                                </div>
+                            <div class="image-wrapper">
+                                <img [src]="chollo.imagen_url || 'https://via.placeholder.com/150'"
+                                    [alt]="chollo.titulo" />
                             </div>
 
-                            <div class="content-container">
-                                <div class="store-name">{{ deal.store }}</div>
-                                <div class="deal-title">{{ deal.title }}</div>
+                            <div class="content-wrapper">
+                                <div class="header">
+                                    <h4 class="title">{{ chollo.titulo }}</h4>
+                                    <div class="favorite-icon" (click)="eliminarFavorito(chollo.id)">
+                                        <ion-icon name="heart" color="danger"></ion-icon>
+                                    </div>
+                                </div>
 
-                                <div class="price-container">
-                                    <span class="current-price">{{ deal.price | currency:'EUR':'symbol':'1.2-2'
-                                        }}</span>
-                                    <span class="original-price">{{ deal.originalPrice | currency:'EUR':'symbol':'1.2-2'
-                                        }}</span>
+                                <div class="price">
+                                    {{ chollo.precio_actual | currency:'EUR':'symbol':'1.2-2' }}
                                 </div>
 
                                 <div class="actions">
-                                    <ion-button class="gradient-button" expand="block" size="small" [href]="deal.url"
-                                        target="_blank">
-                                        IR AL CHOLLO
-                                        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+                                    <ion-button expand="block" size="small" class="view-btn"
+                                        [href]="chollo.enlace_oferta" target="_blank">
+                                        VER OFERTA
                                     </ion-button>
                                 </div>
                             </div>

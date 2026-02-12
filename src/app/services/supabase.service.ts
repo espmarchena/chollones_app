@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,30 @@ export class SupabaseService {
             'https://bgifebyzxnvpghljmiad.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnaWZlYnl6eG52cGdobGptaWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3Njc0NDcsImV4cCI6MjA4NjM0MzQ0N30.OaMa9RRjHhH23iW34u8Py47UludSZsij8R02Vz-HAIc'
         );
+        this.loadFavorites();
+    }
+
+    private _favorites = new BehaviorSubject<Set<string>>(new Set());
+    favorites$ = this._favorites.asObservable();
+
+    getFavoritesValue(): Set<string> {
+        return this._favorites.getValue();
+    }
+
+    async loadFavorites() {
+        const { data, error } = await this.supabase
+            .from('guardados')
+            .select('chollo_id')
+            .eq('usuario_temp_id', 'usuario_invitado');
+
+        if (error) {
+            console.error('Error loading favorites:', error);
+            return;
+        }
+
+        // Force IDs to be strings to ensure consistency
+        const favoriteIds = new Set<string>(data.map((item: any) => String(item.chollo_id)));
+        this._favorites.next(favoriteIds);
     }
 
     // --- CHOLLOS ---
@@ -70,14 +95,26 @@ export class SupabaseService {
     }
 
     // --- FAVORITOS (GUARDADOS) ---
-    async guardarCholloFavorito(cholloId: string) {
+    async guardarCholloFavorito(cholloId: string | number) {
+        const id = String(cholloId);
+        // Optimistic update
+        const currentFavorites = this._favorites.getValue();
+        currentFavorites.add(id);
+        this._favorites.next(new Set(currentFavorites));
+
         const { data, error } = await this.supabase
             .from('guardados')
             .insert([{
-                chollo_id: cholloId,
-                usuario_temp_id: 'usuario_invitado' // Identificador temporal
+                chollo_id: id,
+                usuario_temp_id: 'usuario_invitado'
             }]);
-        if (error) throw error;
+
+        if (error) {
+            // Revert on error
+            currentFavorites.delete(id);
+            this._favorites.next(new Set(currentFavorites));
+            throw error;
+        }
         return data;
     }
 
@@ -87,8 +124,28 @@ export class SupabaseService {
             .select('*, chollos(*, proveedores(nombre))');
 
         if (error) throw error;
-        // Mapeamos para devolver directamente la lista de objetos chollo
         return data.map(fav => fav.chollos) || [];
+    }
+
+    async eliminarFavorito(cholloId: string | number) {
+        const id = String(cholloId);
+        // Optimistic update
+        const currentFavorites = this._favorites.getValue();
+        currentFavorites.delete(id);
+        this._favorites.next(new Set(currentFavorites));
+
+        const { error } = await this.supabase
+            .from('guardados')
+            .delete()
+            .eq('chollo_id', id)
+            .eq('usuario_temp_id', 'usuario_invitado');
+
+        if (error) {
+            // Revert on error
+            currentFavorites.add(id);
+            this._favorites.next(new Set(currentFavorites));
+            throw error;
+        }
     }
 
     // --- NOTIFICACIONES ---
