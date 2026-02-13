@@ -1,18 +1,16 @@
+
 <ion-header class="header-red" translucent="true">
   <ion-toolbar>
     <div class="topbar">
       <div class="brand">CHOLLONES</div>
 
       <div class="search-wrap">
-        <ion-searchbar
-          placeholder="Buscar cualquier cosa"
-          (ionInput)="onSearch($event)"
-          class="searchbar"
-        ></ion-searchbar>
+        <ion-searchbar placeholder="Buscar cualquier cosa" (ionInput)="onSearch($event)"
+          class="searchbar"></ion-searchbar>
       </div>
 
       <ion-buttons slot="end">
-        <ion-button fill="clear">
+        <ion-button fill="clear" (click)="irAGuardados()">
           <ion-icon name="heart-outline"></ion-icon>
         </ion-button>
 
@@ -83,7 +81,9 @@
           <button class="btn-buy">+ {{ p.precioActual }} €</button>
           <button class="btn-cart">Añadir al carrito</button>
 
-          <div class="fav">♡</div>
+          <div class="fav" (click)="toggleFavorito(p, $event)">
+            <ion-icon [name]="isFavorito(p.id) ? 'heart' : 'heart-outline'"></ion-icon>
+          </div>
         </div>
       </div>
     </div>
@@ -102,7 +102,12 @@
           {{ calcDescuento(c) }}%
         </div>
 
-        <img class="cover" [src]="c?.imagen || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop'" />
+        <div class="fav-icon" (click)="toggleFavorito(c, $event)">
+          <ion-icon [name]="isFavorito(c.id) ? 'heart' : 'heart-outline'"></ion-icon>
+        </div>
+
+        <img class="cover"
+          [src]="c?.imagen || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop'" />
 
         <div class="meta">
           <div class="provider">
