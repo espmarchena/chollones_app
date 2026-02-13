@@ -32,13 +32,7 @@ import { Subscription } from 'rxjs';
     IonToolbar,
     IonTitle,
     IonContent,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonButton,
-    IonIcon,
-    IonText
+    IonIcon
   ],
 })
 export class Tab3Page {

@@ -31,7 +31,7 @@ import {
 } from 'ionicons/icons';
 
 import { SupabaseService } from '../services/supabase.service';
-import { FavoritosEventService } from '../services/favoritos-event.service';
+import { FavoritosEvent } from '../services/favoritos-event';
 
 @Component({
   selector: 'app-tab1',
@@ -42,18 +42,11 @@ import { FavoritosEventService } from '../services/favoritos-event.service';
     CommonModule,
     IonHeader,
     IonToolbar,
-    IonTitle,
     IonContent,
     IonSearchbar,
     IonButtons,
     IonButton,
-    IonIcon,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonCard,
-    IonBadge,
-    IonText
+    IonIcon
   ],
 })
 export class Tab1Page implements OnInit {
@@ -84,7 +77,7 @@ export class Tab1Page implements OnInit {
 
   constructor(
     private supabaseService: SupabaseService,
-    private favoritosEventService: FavoritosEventService,
+    private favoritosEvent: FavoritosEvent,
     private router: Router
   ) {
     addIcons({
@@ -178,7 +171,7 @@ export class Tab1Page implements OnInit {
       }
 
       // Notificar a otros componentes
-      this.favoritosEventService.notificarCambio();
+      this.favoritosEvent.notificarCambio();
     } catch (error) {
       console.error('Error al gestionar favorito (revertiendo):', error);
       // Revertir cambio si falla
