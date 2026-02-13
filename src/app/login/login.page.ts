@@ -46,7 +46,7 @@ export class LoginPage implements OnInit {
     await loading.present();
 
     const { error } = await this.supabase.registro(this.email, this.password, 'Nombre Usuario');
-    await loading.dismiss();
+    await loading.dismiss()
 
     if (error) {
       this.showAlert('Error', error.message);
