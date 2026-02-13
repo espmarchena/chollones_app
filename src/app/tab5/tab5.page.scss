@@ -49,22 +49,36 @@ ion-item {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80%; // Centra el contenido verticalmente
+  min-height: 70vh;
   
   .guest-icon-wrapper ion-icon {
-    font-size: 120px;
+    font-size: 100px;
     margin-bottom: 20px;
-    opacity: 0.5;
+    opacity: 0.3;
   }
 
   h2 {
     font-weight: 900;
+    margin-bottom: 10px;
     color: #1a1a1b;
   }
 
   p {
     color: #666;
     max-width: 280px;
+    line-height: 1.4;
     margin: 10px auto;
   }
+
+  .btn-verde {
+    --background: #2dd36f;
+    --color: white;
+    font-weight: 800;
+    margin-top: 20px;
+  }
+}
+
+.logout-item {
+  margin-top: 20px;
+  --border-style: none;
 }
