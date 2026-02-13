@@ -15,7 +15,7 @@ export const routes: Routes = [
   {
     path: 'tabs',
     loadComponent: () => import('./tabs/tabs.page').then((m) => m.TabsPage),
-    canActivate: [authGuard], // <--- AQUÍ ESTÁ EL CANDADO
+    // canActivate: [authGuard], // <--- AQUÍ ESTÁ EL CANDADO
     children: [
       {
         path: 'tab1',

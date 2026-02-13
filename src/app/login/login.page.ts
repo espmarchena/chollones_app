@@ -30,7 +30,7 @@ export class LoginPage implements OnInit {
     const loading = await this.loadingCtrl.create();
     await loading.present();
 
-    const { error } = await this.supabase.signIn(this.email, this.password);
+    const { data, error } = await this.supabase.login(this.email, this.password);
     await loading.dismiss();
 
     if (error) {
@@ -45,7 +45,7 @@ export class LoginPage implements OnInit {
     const loading = await this.loadingCtrl.create();
     await loading.present();
 
-    const { error } = await this.supabase.signUp(this.email, this.password);
+    const { error } = await this.supabase.registro(this.email, this.password, 'Nombre Usuario');
     await loading.dismiss();
 
     if (error) {
@@ -54,6 +54,18 @@ export class LoginPage implements OnInit {
       this.showAlert('Registro exitoso', 'Por favor, verifica tu correo electrónico (si tienes confirmación activada) o inicia sesión.');
     }
   }
+
+  async onLogin() {
+  try {
+    await this.supabase.login(this.email, this.password);
+    // Al tener éxito, el BehaviorSubject en el servicio emite el nuevo usuario.
+    // El Tab 5 cambiará su vista automáticamente.
+    this.router.navigate(['/tabs/tab1']); 
+  } catch (error: any) {
+    // Aquí puedes mostrar un Toast o Alerta con error.message
+    console.log('Fallo el login', error.message);
+  }
+}
 
   async showAlert(header: string, message: string) {
     const alert = await this.alertCtrl.create({

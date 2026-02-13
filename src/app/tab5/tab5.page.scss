@@ -43,3 +43,28 @@ ion-item {
   margin-top: 20px;
   --border-style: none;
 }
+
+.guest-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80%; // Centra el contenido verticalmente
+  
+  .guest-icon-wrapper ion-icon {
+    font-size: 120px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  h2 {
+    font-weight: 900;
+    color: #1a1a1b;
+  }
+
+  p {
+    color: #666;
+    max-width: 280px;
+    margin: 10px auto;
+  }
+}
