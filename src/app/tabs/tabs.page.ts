@@ -5,7 +5,7 @@ import {
   IonTabButton, 
   IonIcon, 
   IonLabel, 
-  IonRouterOutlet // 1. Debe estar aquí
+  IonRouterOutlet 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -23,7 +23,7 @@ import {
     IonTabButton, 
     IonIcon, 
     IonLabel, 
-    IonRouterOutlet // 2. Y DEBE estar aquí
+    IonRouterOutlet // 
   ],
 })
 export class TabsPage {

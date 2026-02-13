@@ -67,12 +67,12 @@ ion-list {
       color: #5f6368;
       margin-bottom: 6px;
       display: -webkit-box;
-      -webkit-line-clamp: 1; // Solo una línea para ahorrar espacio
+      -webkit-line-clamp: 2; // Solo dos líneas para ahorrar espacio
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    // Fila de precios compacta (Estilo captura image_4dfabe.png corregido)
+    // Fila de precios compacta 
     .price-row {
       display: flex;
       flex-direction: column;
