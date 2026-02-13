@@ -102,5 +102,54 @@ export class SupabaseService {
     return data || [];
   }
 
-  // ... otros métodos de tu servicio (login, registro, etc.)
+  async getChollos() {
+  const { data, error } = await this.supabase
+    .from('chollos')
+    .select('*, proveedores(nombre)')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Devuelve el objeto del usuario actual de forma síncrona.
+ * Es útil para comprobaciones rápidas dentro de otros métodos del servicio.
+ */
+getUserActual() {
+  return this.currentUser.value;
+}
+
+/** Obtiene solo los IDs de los chollos que el usuario actual ha guardado */
+async getFavoritosIds() {
+  const user = this.getUserActual();
+  if (!user) return [];
+  const { data, error } = await this.supabase
+    .from('favoritos')
+    .select('chollo_id')
+    .eq('usuario_id', user.id);
+  if (error) throw error;
+  return data.map(f => f.chollo_id);
+}
+
+/** Guarda un chollo en favoritos */
+async guardarCholloFavorito(cholloId: string) {
+  const user = this.getUserActual();
+  if (!user) throw new Error('Debes estar logueado');
+  const { error } = await this.supabase
+    .from('favoritos')
+    .insert({ usuario_id: user.id, chollo_id: cholloId });
+  if (error) throw error;
+}
+
+/** Elimina un chollo de favoritos */
+async eliminarCholloFavorito(cholloId: string) {
+  const user = this.getUserActual();
+  if (!user) return;
+  const { error } = await this.supabase
+    .from('favoritos')
+    .delete()
+    .eq('usuario_id', user.id)
+    .eq('chollo_id', cholloId);
+  if (error) throw error;
+}
 }

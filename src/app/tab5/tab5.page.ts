@@ -13,7 +13,7 @@ import {
   IonAvatar, 
   IonButton,
   IonButtons,
-  IonBadge
+  IonNote
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -38,7 +38,7 @@ import { SupabaseService } from '../services/supabase.service';
     RouterLink,   // 2. Añadido para el botón de "Iniciar Sesión"
     IonHeader, IonToolbar, IonTitle, IonContent, 
     IonList, IonItem, IonLabel, IonIcon, IonAvatar, IonButton,
-    IonButtons, IonBadge
+    IonButtons, IonNote
   ],
 })
 export class Tab5Page implements OnInit {
