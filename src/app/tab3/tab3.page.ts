@@ -18,7 +18,7 @@ import { addIcons } from 'ionicons';
 import { heart, heartOutline, trashOutline } from 'ionicons/icons';
 
 import { SupabaseService } from '../services/supabase.service';
-import { FavoritosEventService } from '../services/favoritos-event.service';
+import { FavoritosEvent } from '../services/favoritos-event';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -48,7 +48,7 @@ export class Tab3Page {
 
   constructor(
     private supabaseService: SupabaseService,
-    private favoritosEventService: FavoritosEventService
+    private favoritosEventService: FavoritosEvent
   ) {
     addIcons({ heart, heartOutline, trashOutline });
   }
