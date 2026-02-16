@@ -1,0 +1,64 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonList, 
+  IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon 
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { storefrontOutline, informationCircleOutline } from 'ionicons/icons';
+import { SupabaseService } from '../services/supabase.service';
+
+@Component({
+  selector: 'app-tab4',
+  templateUrl: './tab4.page.html',
+  styleUrls: ['./tab4.page.scss'],
+  standalone: true,
+  imports: [
+    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, 
+    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon
+  ]
+})
+export class Tab4Page implements OnInit {
+  listadoChollos: any[] = [];
+  filtrados: any[] = [];
+
+  constructor(private supabaseService: SupabaseService) {
+    // Registramos los iconos para el proveedor y la descripción
+    addIcons({ storefrontOutline, informationCircleOutline });
+  }
+
+  async ngOnInit() {
+    await this.cargarChollos();
+  }
+
+  async cargarChollos() {
+    try {
+      // Usamos el nombre correcto de la función definido en tu servicio
+      const res = await this.supabaseService.getChollos();
+      console.log('Datos recibidos:', res); // Mira la consola (F12) para ver si viene "proveedores"
+      this.listadoChollos = res;
+      this.filtrados = [...res];
+    } catch (error) {
+      console.error('Error en Tab Chollos:', error);
+    }
+  }
+
+  calcDescuento(chollo: any): number {
+    const actual = Number(chollo?.precio_actual || 0);
+    const original = Number(chollo?.precio_original || 0);
+    if (!actual || !original || original <= actual) return 0;
+    return Math.round(((original - actual) / original) * 100);
+  }
+
+  buscar(event: any) {
+    const texto = (event.target.value || '').toLowerCase().trim();
+    if (!texto) {
+      this.filtrados = [...this.listadoChollos];
+      return;
+    }
+    this.filtrados = this.listadoChollos.filter(c => 
+      c.titulo.toLowerCase().includes(texto) || 
+      c.proveedores?.nombre?.toLowerCase().includes(texto)
+    );
+  }
+}

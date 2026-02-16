@@ -1,0 +1,128 @@
+// Contenedor principal
+ion-content {
+  --background: #ffffff;
+}
+
+// Estilo de la lista más apretado
+ion-list {
+  background: transparent;
+  padding: 4px; // Reducido de 8px
+}
+
+// Tarjeta de cada chollo más compacta
+.chollo-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --background: #ffffff;
+  --min-height: 90px; // Altura mínima controlada
+  margin-bottom: 8px; // Reducido de 16px
+  border-bottom: 1px solid #f2f2f2;
+
+  ion-thumbnail {
+    width: 85px; // Reducido de 110px
+    height: 85px; // Reducido de 110px
+    margin: 8px;  // Reducido de 12px
+    border-radius: 6px;
+    overflow: hidden;
+    
+    img {
+      object-fit: cover;
+    }
+  }
+
+  ion-label {
+    margin: 8px 10px 8px 0; // Márgenes más pequeños
+
+    h2 {
+      font-weight: 700;
+      color: #1a1a1b;
+      font-size: 0.95rem; // Reducido de 1.1rem
+      white-space: normal;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    // Información del proveedor más pequeña
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+
+      ion-icon {
+        font-size: 13px; // Más pequeño
+        color: var(--ion-color-primary);
+      }
+
+      .vendor-text {
+        font-weight: 600;
+        font-size: 0.75rem; // Reducido de 0.9rem
+        color: var(--ion-color-primary);
+      }
+    }
+
+    // Descripción más discreta
+    .description-text {
+      font-size: 0.75rem; // Reducido de 0.85rem
+      color: #5f6368;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; // Solo dos líneas para ahorrar espacio
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    // Fila de precios compacta 
+    .price-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+
+      .current-price {
+        font-size: 1.25rem; // Reducido de 1.6rem
+        font-weight: 800;
+        color: #1a1a1b;
+      }
+
+      .savings-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .old-price {
+          font-size: 0.85rem; // Reducido de 1rem
+          text-decoration: line-through;
+          color: #70757a;
+          font-weight: 400;
+        }
+
+        .savings-amount {
+          font-size: 0.85rem; // Reducido de 1rem
+          color: #d93025; // Rojo ahorro
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  // Badge de descuento porcentual más pequeño
+  ion-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    --background: #d93025;
+    font-weight: 700;
+    font-size: 0.65rem; // Más pequeño
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+}
+
+// Buscador superior más bajo
+ion-searchbar {
+  --border-radius: 8px;
+  --box-shadow: none;
+  --background: #f1f3f4;
+  --height: 36px; // Altura del buscador reducida
+  padding: 4px 12px;
+}

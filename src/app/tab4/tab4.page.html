@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Listado de Chollos</ion-title>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-searchbar placeholder="Buscar ofertas..." (ionInput)="buscar($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list lines="full">
+    <ion-item *ngFor="let chollo of filtrados" class="chollo-item">
+      <ion-thumbnail slot="start">
+        <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
+      </ion-thumbnail>
+      
+      <ion-label>
+        <h2>{{ chollo.titulo }}</h2>
+        
+        <p class="info-row">
+          <ion-icon name="storefront-outline" color="primary"></ion-icon>
+          <span class="vendor-text">{{ chollo.proveedores?.nombre || 'Tienda' }}</span>
+        </p>
+
+        <p class="description-text">{{ chollo.descripcion }}</p>
+
+        <div class="price-row">
+        <span class="current-price">{{ chollo.precio_actual }}€</span>
+
+        <div class="savings-container" *ngIf="chollo.precio_original && chollo.precio_original > chollo.precio_actual">
+            <span class="old-price">{{ chollo.precio_original }}€</span>
+            <span class="savings-amount">Ahorra: {{ (chollo.precio_original - chollo.precio_actual) | number:'1.2-2' }}€</span>
+        </div>
+        </div>
+      </ion-label>
+
+      <ion-badge slot="end" color="danger" *ngIf="calcDescuento(chollo) > 0">
+        -{{ calcDescuento(chollo) }}%
+      </ion-badge>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,108 +1,155 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
   private supabase: SupabaseClient;
+  
+  // BehaviorSubject que actúa como la fuente de verdad del estado del usuario
+  private currentUser = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.currentUser.asObservable();
 
   constructor() {
-    this.supabase = createClient(
-      'https://bgifebyzxnvpghljmiad.supabase.co', 
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJnaWZlYnl6eG52cGdobGptaWFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3Njc0NDcsImV4cCI6MjA4NjM0MzQ0N30.OaMa9RRjHhH23iW34u8Py47UludSZsij8R02Vz-HAIc'
-    );
+    // Inicialización del cliente con persistencia nativa de Capacitor
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+      auth: {
+        storage: {
+          getItem: async (key) => (await Preferences.get({ key })).value,
+          setItem: async (key, value) => await Preferences.set({ key, value }),
+          removeItem: async (key) => await Preferences.remove({ key }),
+        },
+        autoRefreshToken: true,
+        persistSession: true
+      }
+    });
+
+    // Escuchar cambios en el estado de autenticación (login, logout, refresh)
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Cambio en Auth Supabase:', event);
+      this.currentUser.next(session?.user ?? null);
+    });
+  }
+
+  // Método para obtener el valor actual del usuario de forma síncrona
+  get userValue() {
+    return this.currentUser.value;
+  }
+  
+  /**
+   * Inicia sesión con correo y contraseña
+   */
+  async login(email: string, pass: string) {
+    return await this.supabase.auth.signInWithPassword({ email, password: pass });
+    }
+
+  /**
+   * Registra un nuevo usuario
+   * Nota: Como desactivaste la confirmación de email, el usuario se logueará automáticamente.
+   */
+  async registro(email: string, pass: string, nombre: string) {
+    return await this.supabase.auth.signUp({
+      email,
+      password: pass,
+      options: { data: { full_name: nombre } }
+    });
+  }
+
+  /**
+   * Cierra la sesión en Supabase y limpia el estado local
+   */
+  async logout() {
+    try {
+      const { error } = await this.supabase.auth.signOut();
+      if (error) throw error;
+      
+      // Forzamos la actualización del BehaviorSubject a null
+      this.currentUser.next(null);
+      console.log('Sesión cerrada con éxito');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  }
+
+  /**
+   * Ejemplo de método para obtener chollos guardados
+   * (Asegúrate de que este método coincida con tu lógica de base de datos)
+   */
+  async getChollosGuardados() {
+    const user = this.userValue;
+    if (!user) return [];
+
+    const { data, error } = await this.supabase
+      .from('favoritos')
+      .select(`
+        id,
+        chollos (
+          id,
+          titulo,
+          precio_actual,
+          precio_original,
+          imagen_url,
+          proveedores ( nombre )
+        )
+      `)
+      .eq('usuario_id', user.id);
+
+    if (error) throw error;
+    return data || [];
   }
 
   async getChollos() {
-    const { data, error } = await this.supabase
-      .from('chollos')
-      .select(`
-        id,
-        titulo,
-        descripcion,
-        precio_actual,
-        precio_original,
-        proveedores (nombre, logo),
-        puntos (estado)
-      `)
-      .order('created_at', { ascending: false });
+  const { data, error } = await this.supabase
+    .from('chollos')
+    .select('*, proveedores(nombre)')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data;
+}
 
-    if (error) {
-      console.error('Error en la consulta:', error);
-      throw error;
-    }
-    return data || [];
-  }
+/**
+ * Devuelve el objeto del usuario actual de forma síncrona.
+ * Es útil para comprobaciones rápidas dentro de otros métodos del servicio.
+ */
+getUserActual() {
+  return this.currentUser.value;
+}
 
-  // Añade estos métodos dentro de la clase SupabaseService
-  async getProveedores() {
-    const { data } = await this.supabase.from('proveedores').select('*');
-    return data || [];
-  }
+/** Obtiene solo los IDs de los chollos que el usuario actual ha guardado */
+async getFavoritosIds() {
+  const user = this.getUserActual();
+  if (!user) return [];
+  const { data, error } = await this.supabase
+    .from('favoritos')
+    .select('chollo_id')
+    .eq('usuario_id', user.id);
+  if (error) throw error;
+  return data.map(f => f.chollo_id);
+}
 
-  async getPuntos() {
-    const { data } = await this.supabase.from('puntos').select('*');
-    return data || [];
-  }
+/** Guarda un chollo en favoritos */
+async guardarCholloFavorito(cholloId: string) {
+  const user = this.getUserActual();
+  if (!user) throw new Error('Debes estar logueado');
+  const { error } = await this.supabase
+    .from('favoritos')
+    .insert({ usuario_id: user.id, chollo_id: cholloId });
+  if (error) throw error;
+}
 
-  async insertarChollo(chollo: any) {
-    const { data, error } = await this.supabase.from('chollos').insert([chollo]);
-    if (error) throw error;
-    return data;
-  }
-
-  async insertarProveedor(proveedor: any) {
-    const { data, error } = await this.supabase
-      .from('proveedores')
-      .insert([proveedor]);
-    if (error) throw error;
-    return data;
-  }
-
-    // --- MÉTODOS PARA CATEGORÍAS ---
-  async getCategorias() {
-    const { data, error } = await this.supabase
-      .from('categorias')
-      .select('*')
-      .order('nombre', { ascending: true });
-    if (error) throw error;
-    return data || [];
-  }
-
-  async getChollosPorCategoria(categoriaId: string) {
-    const { data, error } = await this.supabase
-      .from('chollos')
-      .select('*, proveedores(nombre), puntos(estado), categorias(nombre)')
-      .eq('categoria_id', categoriaId); // Filtra por la FK que creamos
-    if (error) throw error;
-    return data || [];
-  }
-
-  // --- MÉTODOS PARA GUARDADOS (FAVORITOS) ---
-  async guardarCholloFavorito(cholloId: string) {
-    const { data, error } = await this.supabase
-      .from('guardados')
-      .insert([{ chollo_id: cholloId, usuario_temp_id: 'user_123' }]); // 'user_123' es temporal
-    if (error) throw error;
-    return data;
-  }
-
-  async getChollosGuardados() {
-    const { data, error } = await this.supabase
-      .from('guardados')
-      .select('*, chollos(*, proveedores(nombre))');
-    if (error) throw error;
-    return data.map(f => f.chollos) || []; // Devolvemos solo la info del chollo
-  }
-
-  // --- MÉTODOS PARA NOTIFICACIONES ---
-  async getNotificaciones() {
-    const { data, error } = await this.supabase
-      .from('notificaciones')
-      .select('*')
-      .order('fecha', { ascending: false });
-    if (error) throw error;
-    return data || [];
-  }
+/** Elimina un chollo de favoritos */
+async eliminarCholloFavorito(cholloId: string) {
+  const user = this.getUserActual();
+  if (!user) return;
+  const { error } = await this.supabase
+    .from('favoritos')
+    .delete()
+    .eq('usuario_id', user.id)
+    .eq('chollo_id', cholloId);
+  if (error) throw error;
+}
 }

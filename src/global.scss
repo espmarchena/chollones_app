@@ -36,6 +36,7 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
+<<<<<<< HEAD
 /* Colores corporativos de Chollones.com */
 :root {
   --ion-color-primary: #f05a5e;
@@ -49,4 +50,61 @@
   --ion-color-secondary-contrast: #ffffff;
 
   --ion-background-color: #fcfcfc;
+=======
+/* =========================
+   CHOLLONES - Tema Global
+   ========================= */
+
+/* Fondo general */
+ion-content {
+  --background: #f4f5f8
+}
+
+/* Header rojo en toda la app */
+ion-header,
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: #fff;
+}
+
+/* Iconos en header blancos */
+ion-header ion-icon,
+ion-toolbar ion-icon {
+  color: #fff;
+}
+
+/* Searchbar estilo web */
+ion-searchbar {
+  --border-radius: 999px;
+  --background: rgba(255, 255, 255, 0.92);
+  --color: #111;
+  --placeholder-color: #666;
+  --icon-color: #666;
+}
+
+/* Botones verde menta (para usar con class="btn-verde") */
+ion-button.btn-verde {
+  --background: var(--ion-color-secondary);
+  --color: #fff;
+  font-weight: 800;
+  --border-radius: 12px;
+}
+
+/* Links tipo web */
+a.link {
+  color: #111;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Scrollbars en web (opcional) */
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+>>>>>>> unificados
 }

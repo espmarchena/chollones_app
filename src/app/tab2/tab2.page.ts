@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, 
-  IonInput, IonSelect, IonSelectOption, IonButton, IonTextarea 
+  IonHeader, IonToolbar, IonTitle, IonContent, 
+  IonGrid, IonRow, IonCol, IonCard, IonText 
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Para el formulario
-import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-tab2',
@@ -13,58 +11,20 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['tab2.page.scss'],
   standalone: true,
   imports: [
-    IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, 
-    IonInput, IonSelect, IonSelectOption, IonButton, IonTextarea,
-    CommonModule, FormsModule
+    CommonModule, IonHeader, IonToolbar, IonTitle, 
+    IonContent, IonGrid, IonRow, IonCol, IonCard, IonText
   ],
 })
-export class Tab2Page implements OnInit {
-  // Variables para el formulario
-  nuevoChollo = {
-    titulo: '',
-    precio_actual: 0,
-    precio_original: 0,
-    url: '',
-    proveedor_id: '',
-    punto_id: ''
-  };
+export class Tab2Page {
+  // Estos son los datos exactos que tenías en el repo de espmarchena
+  categorias = [
+    { nombre: 'Belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png', color: '#FFEFEF' },
+    { nombre: 'Moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png', color: '#EFFFFE' },
+    { nombre: 'Mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png', color: '#F0FFEF' },
+    { nombre: 'Cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png', color: '#FEFFEF' },
+    { nombre: 'Marketing', img: 'https://cdn-icons-png.flaticon.com/512/3135/3135683.png', color: '#EFEFFF' },
+    { nombre: 'Juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png', color: '#FFF6EF' },
+  ];
 
-  nombreNuevoProveedor: string = '';
-
-  proveedores: any[] = [];
-  puntos: any[] = [];
-
-  constructor(private supabaseService: SupabaseService) {}
-
-  async ngOnInit() {
-    // Cargamos los datos para los selectores al abrir la pestaña
-    this.proveedores = await this.supabaseService.getProveedores();
-    this.puntos = await this.supabaseService.getPuntos();
-  }
-
-  async guardarProveedor() {
-    if (!this.nombreNuevoProveedor) return;
-    
-    try {
-      await this.supabaseService.insertarProveedor(this.nombreNuevoProveedor);
-      alert('Proveedor añadido: ' + this.nombreNuevoProveedor);
-      this.nombreNuevoProveedor = ''; // Limpiar campo
-      this.proveedores = await this.supabaseService.getProveedores(); // Refrescar lista del desplegable
-    } catch (error) {
-      console.error(error);
-      alert('Error al añadir proveedor');
-    }
-  }
-
-  async guardarChollo() {
-    try {
-      await this.supabaseService.insertarChollo(this.nuevoChollo);
-      alert('¡Chollo publicado con éxito!');
-      // Limpiar formulario
-      this.nuevoChollo = { titulo: '', precio_actual: 0, precio_original: 0, url: '', proveedor_id: '', punto_id: '' };
-    } catch (error) {
-      console.error(error);
-      alert('Error al guardar');
-    }
-  }
+  constructor() {}
 }
