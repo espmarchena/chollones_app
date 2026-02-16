@@ -1,13 +1,4 @@
 import { Routes } from '@angular/router';
-<<<<<<< HEAD
-
-export const routes: Routes = [
-  {
-    path: '',
-    loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
-  },
-];
-=======
 // Asegúrate de que el nombre del archivo coincida (auth.guard o auth-guard)
 import { authGuard } from './guards/auth-guard'; 
 
@@ -56,4 +47,3 @@ export const routes: Routes = [
   },
 
 ];
->>>>>>> unificados

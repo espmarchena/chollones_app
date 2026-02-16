@@ -22,8 +22,6 @@ export const routes: Routes = [
           import('../tab3/tab3.page').then((m) => m.Tab3Page),
       },
       {
-<<<<<<< HEAD
-=======
         path: 'tab4',
         loadComponent: () =>
           import('../tab4/tab4.page').then((m) => m.Tab4Page),
@@ -42,7 +40,6 @@ export const routes: Routes = [
       },
 
       {
->>>>>>> unificados
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',

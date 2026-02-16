@@ -24,7 +24,9 @@ export class SupabaseService {
           removeItem: async (key) => await Preferences.remove({ key }),
         },
         autoRefreshToken: true,
-        persistSession: true
+        persistSession: true,
+        detectSessionInUrl: false,
+        storageKey: 'chollones-auth-token'
       }
     });
 
