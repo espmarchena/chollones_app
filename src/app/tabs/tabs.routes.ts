@@ -31,6 +31,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('../tab5/tab5.page').then((m) => m.Tab5Page),
       },
+
+      // ✅ AQUÍ el mapa (dentro de tabs)
+      {
+        path: 'mapa',
+        loadComponent: () =>
+          import('./mapa/mapa.page').then((m) => m.MapaPage),
+      },
+
       {
         path: '',
         redirectTo: '/tabs/tab1',

@@ -1,5 +1,6 @@
 ion-content {
   --background: #f4f5f8;
+  --overflow: auto;
 }
 
 /* Header */
@@ -86,7 +87,7 @@ ion-button {
   }
 }
 
-/* Grid de “últimas ofertas” */
+/* Grid últimas ofertas */
 .quick-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -114,12 +115,13 @@ ion-button {
     opacity: 0.9;
   }
 }
-/* Banner grande */
+
+/* Banner */
 .banner {
   margin: 14px;
   height: 180px;
   border-radius: 18px;
-  background: url('https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=1200') center/cover no-repeat;
+  background: center/cover no-repeat;
   position: relative;
   overflow: hidden;
   box-shadow: 0 12px 30px rgba(0,0,0,0.12);
@@ -168,14 +170,19 @@ ion-button {
   border-radius: 12px;
 }
 
-/* Carrusel productos populares */
-.popular-row {
+/* Scroll horizontal seguro */
+.popular-row,
+.cards-row,
+.cat-strip {
   display: flex;
   gap: 14px;
   overflow-x: auto;
+  overflow-y: visible;
   padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Product cards */
 .product-card {
   min-width: 260px;
   background: #fff;
@@ -183,32 +190,6 @@ ion-button {
   box-shadow: 0 12px 30px rgba(0,0,0,0.10);
   overflow: hidden;
   position: relative;
-}
-
-.pill {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #34d399;
-  color: #fff;
-  font-weight: 900;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  z-index: 2;
-}
-
-.disc {
-  position: absolute;
-  top: 10px;
-  left: 82px;
-  background: var(--ion-color-primary);
-  color: #fff;
-  font-weight: 900;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  z-index: 2;
 }
 
 .product-img {
@@ -222,92 +203,13 @@ ion-button {
   padding: 12px;
 }
 
-.product-cat {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-bottom: 6px;
-}
-
 .product-title {
   font-size: 14px;
   font-weight: 900;
-  line-height: 1.15;
   margin-bottom: 6px;
 }
 
-.product-prov {
-  font-size: 12px;
-  opacity: 0.75;
-  margin-bottom: 10px;
-}
-
-.product-prices {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  margin-bottom: 10px;
-}
-
-.p-now {
-  color: var(--ion-color-primary);
-  font-weight: 900;
-}
-
-.p-old {
-  color: #999;
-  text-decoration: line-through;
-  font-size: 13px;
-}
-
-.btn-buy {
-  width: 100%;
-  border: 0;
-  padding: 12px 12px;
-  border-radius: 12px;
-  background: var(--ion-color-secondary);
-  color: #fff;
-  font-weight: 900;
-}
-
-.btn-cart {
-  width: 100%;
-  border: 0;
-  margin-top: 10px;
-  padding: 12px 12px;
-  border-radius: 14px;
-  background: var(--ion-color-primary);
-  color: #fff;
-  font-weight: 900;
-}
-
-.fav {
-  text-align: center;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  ion-icon {
-    font-size: 24px;
-    color: var(--ion-color-primary);
-  }
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
-/* Estilos para chollos cards */
-.cards-row {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-}
-
+/* Chollo cards */
 .chollo-card {
   min-width: 260px;
   background: #fff;
@@ -317,127 +219,17 @@ ion-button {
   position: relative;
 }
 
-.badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: var(--ion-color-primary);
-  color: #fff;
-  font-weight: 900;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  z-index: 2;
-
-  &.badge-hot {
-    background: #ff6b6b;
-  }
-}
-
-.fav-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 3;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-
-  ion-icon {
-    font-size: 20px;
-    color: var(--ion-color-primary);
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background: rgba(255, 255, 255, 1);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
 .cover {
   width: 100%;
   height: 170px;
   object-fit: cover;
-  background: #f2f2f2;
 }
 
 .meta {
   padding: 12px;
 }
 
-.provider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-
-  .logo {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-  }
-
-  span {
-    font-size: 12px;
-    opacity: 0.7;
-  }
-}
-
-.title {
-  font-size: 14px;
-  font-weight: 900;
-  line-height: 1.15;
-  margin-bottom: 8px;
-}
-
-.prices {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-  margin-bottom: 10px;
-
-  .now {
-    color: var(--ion-color-primary);
-    font-weight: 900;
-    font-size: 18px;
-  }
-
-  .old {
-    color: #999;
-    text-decoration: line-through;
-    font-size: 13px;
-  }
-}
-
-.btn-add {
-  width: 100%;
-  border: 0;
-  padding: 12px;
-  border-radius: 12px;
-  background: var(--ion-color-primary);
-  color: #fff;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-/* Categorías strip */
-.cat-strip {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-}
-
+/* Categorías */
 .cat-item {
   min-width: 140px;
   background: #fff;
@@ -458,4 +250,44 @@ ion-button {
     font-weight: 900;
     font-size: 13px;
   }
+  /* Permite scroll vertical aunque estés encima de un carrusel horizontal */
+.popular-row,
+.cards-row,
+.cat-strip {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+/* En escritorio con rueda, evita que el contenedor horizontal “se coma” el scroll */
+.popular-row,
+.cards-row,
+.cat-strip {
+  scroll-snap-type: none;
+}
+/* Si estás encima de un carrusel horizontal, permite igualmente el scroll vertical */
+.popular-row,
+.cards-row,
+.cat-strip {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+
+  /* CLAVE: no bloquear el pan vertical */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+/* PERMITIR SCROLL VERTICAL SIEMPRE */
+.popular-row,
+.cards-row,
+.cat-strip {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+
+  /* CLAVE */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+
 }

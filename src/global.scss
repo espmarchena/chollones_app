@@ -1,12 +1,6 @@
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -25,32 +19,30 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* Dark mode */
+@import "@ionic/angular/css/palettes/dark.system.css";
 
 /* =========================
    CHOLLONES - Tema Global
    ========================= */
 
-/* Fondo general */
+/* Fondo general + scroll estable */
 ion-content {
-  --background: #f4f5f8
+  --background: #f4f5f8;
+  --overflow: auto;
+  --padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 /* Header rojo en toda la app */
-ion-header,
-ion-toolbar {
+.header-red ion-toolbar {
   --background: var(--ion-color-primary);
   --color: #fff;
 }
+
+.header-red ion-icon {
+  color: #fff;
+}
+
 
 /* Iconos en header blancos */
 ion-header ion-icon,
@@ -67,7 +59,7 @@ ion-searchbar {
   --icon-color: #666;
 }
 
-/* Botones verde menta (para usar con class="btn-verde") */
+/* Botones verde menta */
 ion-button.btn-verde {
   --background: var(--ion-color-secondary);
   --color: #fff;
@@ -82,13 +74,20 @@ a.link {
   font-weight: 600;
 }
 
-/* Scrollbars en web (opcional) */
+/* Tab bar siempre clicable */
+ion-tab-bar {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* Scrollbars (web) */
 ::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
+@import "leaflet/dist/leaflet.css";
