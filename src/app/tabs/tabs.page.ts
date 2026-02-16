@@ -1,33 +1,67 @@
 import { Component } from '@angular/core';
-import { 
-  IonTabs, 
-  IonTabBar, 
-  IonTabButton, 
-  IonIcon, 
-  IonLabel, 
-  IonRouterOutlet 
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonTabs,
+  IonRouterOutlet,
+  IonTabBar,
+  IonTabButton,
+  IonLabel,
+  IonSearchbar
 } from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
-import { 
-  flameOutline, gridOutline, heartOutline, notificationsOutline, personOutline 
+import {
+  heartOutline,
+  personOutline,
+  bagOutline,
+  flameOutline,
+  gridOutline,
+  notificationsOutline,
+  locationOutline
 } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',
-  templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss'],
+  templateUrl: './tabs.page.html',
+  styleUrls: ['./tabs.page.scss'],
   standalone: true,
   imports: [
-    IonTabs, 
-    IonTabBar, 
-    IonTabButton, 
-    IonIcon, 
-    IonLabel, 
-    IonRouterOutlet // 
-  ],
+    CommonModule,
+    RouterLink,
+
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonSearchbar,
+
+    IonTabs,
+    IonRouterOutlet,
+    IonTabBar,
+    IonTabButton,
+    IonLabel
+  ]
 })
 export class TabsPage {
   constructor() {
-    addIcons({ flameOutline, gridOutline, heartOutline, notificationsOutline, personOutline });
+    addIcons({
+      heartOutline,
+      personOutline,
+      bagOutline,
+      flameOutline,
+      gridOutline,
+      notificationsOutline,
+      locationOutline
+    });
   }
 }

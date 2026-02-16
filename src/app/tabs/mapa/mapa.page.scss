@@ -1,0 +1,10 @@
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+/* 🔥 CLAVE: cuando el tab no está activo, que no capture eventos */
+:host(.ion-page-hidden) #map,
+:host(.ion-page-hidden) .leaflet-container {
+  pointer-events: none !important;
+}
