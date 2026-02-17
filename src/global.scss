@@ -91,3 +91,8 @@ ion-tab-bar {
   border-radius: 10px;
 }
 @import "leaflet/dist/leaflet.css";
+//Un pequeño fix para que el contenedor del mapa ocupe toda la pantalla
+#map {
+  height: 100%;
+  width: 100%;
+}

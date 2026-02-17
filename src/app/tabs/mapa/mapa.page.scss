@@ -1,6 +1,7 @@
 #map {
   height: 100%;
   width: 100%;
+  min-height: 300px; /* Asegura que tenga espacio */
 }
 
 /* 🔥 CLAVE: cuando el tab no está activo, que no capture eventos */
