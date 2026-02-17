@@ -34,23 +34,42 @@
 //ANIMACION CHOLOLO
 .contenedor-mascota {
   position: fixed;
-  bottom: 85px; // Justo encima de la barra de navegación
-  right: 15px;
+  bottom: 85px; 
+  right: -80px; // Empezamos con el mono escondido a la derecha
   z-index: 9999;
   width: 70px;
-  pointer-events: none; // Para que no moleste al hacer clic
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-end;
 
   .monito-animado {
     width: 100%;
-    animation: saludar 4s ease-in-out infinite;
-    transform-origin: bottom center;
+    // Animación de 20 segundos para que no sea repetitiva
+    animation: cicloMascota 20s ease-in-out infinite;
+    transform-origin: bottom right;
   }
 }
 
-@keyframes saludar {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  20% { transform: translateY(-10px) rotate(5deg); } // Sube y se inclina
-  40% { transform: translateY(-10px) rotate(-5deg); } // Saluda al otro lado
-  60% { transform: translateY(-10px) rotate(5deg); }
-  80% { transform: translateY(0) rotate(0); } // Baja
+@keyframes cicloMascota {
+  // 0% a 70%: El mono está totalmente escondido
+  0%, 70% { transform: translateX(0) rotate(0); }
+  
+  // 72%: Se asoma un poquito (curiosidad)
+  72% { transform: translateX(-40px) rotate(-10deg); }
+  
+  // 77%: Se vuelve a esconder un poco
+  77% { transform: translateX(-40px) rotate(-10deg); }
+  
+  // 80%: Sale del todo para saludar
+  80% { transform: translateX(-90px) rotate(-5deg); }
+  
+  // 82%, 86%: Movimiento de saludo (arriba y abajo)
+  82%, 86% { transform: translateX(-90px) rotate(10deg); }
+  84%, 88% { transform: translateX(-90px) rotate(-10deg); }
+  
+  // 92%: Se queda mirando un momento
+  92% { transform: translateX(-90px) rotate(0) scale(1.1); }
+  
+  // 100%: Se retira rápidamente
+  100% { transform: translateX(0) rotate(0); }
 }
