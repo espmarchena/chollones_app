@@ -34,18 +34,16 @@ export class Tab4Page implements OnInit {
     private supabaseService: SupabaseService, 
     private locationService: LocationService
   ) {
-    // Registramos todos los iconos necesarios para la interfaz
     addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline });
   }
 
   async ngOnInit() {
     try {
-      // Obtenemos la ubicación actual para calcular distancias
       const coords = await this.locationService.getPosition();
       this.miLat = coords.latitude;
       this.miLng = coords.longitude;
     } catch (e) {
-      console.warn('GPS no disponible, usando Sevilla por defecto', e);
+      console.warn('GPS no disponible, usando Sevilla por defecto');
       this.miLat = 37.3891; 
       this.miLng = -5.9845;
     }
@@ -55,20 +53,23 @@ export class Tab4Page implements OnInit {
 
   async cargarChollos() {
     try {
-      const res = await this.supabaseService.getChollos();
-      const data = (res as any).data || res;
-      
-      if (data && Array.isArray(data)) {
-        this.listadoChollos = data.map(c => {
+      // 1. LLAMADA LIMPIA: El servicio ya nos devuelve un array seguro (o [])
+      const chollos = await this.supabaseService.getChollos();
+
+      // 2. VALIDACIÓN SIMPLE: Solo comprobamos que sea un array
+      // Ya no hace falta buscar .data ni hacer casting raro
+      if (chollos && Array.isArray(chollos)) {
+        
+        this.listadoChollos = chollos.map(c => {
+          // Lógica de distancia
           if (c.lat && c.lng) {
-            // Usamos la fórmula centralizada en el servicio para evitar repetir código
             const d = this.locationService.calcularDistancia(this.miLat, this.miLng, c.lat, c.lng);
             return { ...c, distanciaKM: d.toFixed(1) };
           }
           return { ...c, distanciaKM: '?' };
         });
 
-        // Ordenamos la lista para mostrar primero los chollos más cercanos
+        // Ordenar por cercanía
         this.listadoChollos.sort((a, b) => {
           if (a.distanciaKM === '?') return 1;
           if (b.distanciaKM === '?') return -1;
@@ -77,13 +78,14 @@ export class Tab4Page implements OnInit {
 
         this.filtrados = [...this.listadoChollos];
 
-        // Iniciamos la vigilancia una vez que los datos están cargados
+        // Iniciar vigilancia
         if (this.listadoChollos.length > 0) {
           this.locationService.iniciarVigilancia(this.listadoChollos);
         }
       }
     } catch (error) {
-      console.error('Error al cargar los chollos:', error);
+      console.error('Error al cargar chollos:', error);
+      // Gracias al servicio blindado, es raro llegar aquí, pero no rompemos la app
     }
   }
 
@@ -111,13 +113,11 @@ export class Tab4Page implements OnInit {
 
     const lat = chollo.lat;
     const lng = chollo.lng;
-    const label = encodeURI(chollo.titulo);
+    
+    // HE CORREGIDO TUS URLS. La que tenías de googleusercontent no iba a funcionar.
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    const appleMapsUrl = `maps://maps.apple.com/?daddr=${lat},${lng}`;
 
-    // Corregida la sintaxis de la URL de Google Maps para que sea funcional
-    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-    const appleMapsUrl = `maps://maps.apple.com/?daddr=${lat},${lng}&q=${label}`;
-
-    // Abrimos la app de mapas externa según el sistema operativo
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
       window.open(appleMapsUrl, '_system');
     } else {

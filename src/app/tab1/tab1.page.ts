@@ -96,12 +96,15 @@ export class Tab1Page implements OnInit {
     await this.cargarFavoritos();
   }
 
-  async cargarDatos() {
-    try {
-      const res = await this.supabaseService.getChollos();
+async cargarDatos() {
+  try {
+    const res = await this.supabaseService.getChollos();
 
-      // Mapeamos los datos de Supabase al formato que usa tu HTML
-      const dataMapeada = res.map((c: any) => ({
+    // Validamos que res no sea nulo y que sea un array (o contenga data como array)
+    const dataRaw = Array.isArray(res) ? res : (res as any)?.data;
+
+    if (dataRaw && Array.isArray(dataRaw)) {
+      const dataMapeada = dataRaw.map((c: any) => ({
         ...c,
         titulo: c.titulo,
         precioActual: c.precio_actual,
@@ -113,10 +116,13 @@ export class Tab1Page implements OnInit {
 
       this.productosPopulares = dataMapeada;
       this.chollosFiltrados = [...dataMapeada];
-    } catch (error) {
-      console.error('Error al cargar datos:', error);
+    } else {
+      console.warn('No se pudieron cargar los datos o el formato es incorrecto');
     }
+  } catch (error) {
+    console.error('Error al cargar datos:', error);
   }
+}
 
   async cargarFavoritos() {
     try {

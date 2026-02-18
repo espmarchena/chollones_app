@@ -31,6 +31,13 @@ ion-content {
   --background: #f4f5f8;
   --overflow: auto;
   --padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  /* Esta es la clave. Forzamos a Ionic a recibir eventos en el centro de la pantalla */
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+ion-router-outlet {
+  pointer-events: auto !important;
 }
 
 /* Header rojo en toda la app */
@@ -95,4 +102,49 @@ ion-tab-bar {
 #map {
   height: 100%;
   width: 100%;
+  z-index: 1; /* Bajo, para que no tape menús */
+}
+
+
+//ANIMACION CHOLOLO
+.contenedor-mascota {
+  position: fixed;
+  bottom: 85px; 
+  right: -80px; // Empezamos con el mono escondido a la derecha
+  z-index: 9999;
+  width: 100px !important;
+  pointer-events: none !important; /* Esto obliga a que el contenedor del mono no bloquee los clics al mapa */
+  display: flex;
+  justify-content: flex-end;
+
+  .monito-animado {
+    width: 70%;
+    // Animación de 20 segundos para que no sea repetitiva
+    animation: cicloMascota 20s ease-in-out infinite;
+    transform-origin: bottom right;
+  }
+}
+
+@keyframes cicloMascota {
+  // 0% a 70%: El mono está totalmente escondido
+  0%, 70% { transform: translateX(0) rotate(0); }
+  
+  // 72%: Se asoma un poquito (curiosidad)
+  72% { transform: translateX(-40px) rotate(-10deg); }
+  
+  // 77%: Se vuelve a esconder un poco
+  77% { transform: translateX(-40px) rotate(-10deg); }
+  
+  // 80%: Sale del todo para saludar
+  80% { transform: translateX(-90px) rotate(-5deg); }
+  
+  // 82%, 86%: Movimiento de saludo (arriba y abajo)
+  82%, 86% { transform: translateX(-90px) rotate(10deg); }
+  84%, 88% { transform: translateX(-90px) rotate(-10deg); }
+  
+  // 92%: Se queda mirando un momento
+  92% { transform: translateX(-90px) rotate(0) scale(1.1); }
+  
+  // 100%: Se retira rápidamente
+  100% { transform: translateX(0) rotate(0); }
 }

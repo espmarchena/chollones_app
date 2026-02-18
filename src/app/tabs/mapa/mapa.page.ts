@@ -37,20 +37,29 @@ export class MapaPage implements OnInit {
     await this.obtenerChollos();
   }
 
-  async obtenerChollos() {
-    // Llamamos a Supabase
+async obtenerChollos() {
+  try {
+    // 1. Obtenemos la respuesta completa sin desestructurar {}
     const respuesta = await this.supabase.getChollos(); 
     
-  // Si tu servicio devuelve directamente el array de chollos:
-    if (respuesta && Array.isArray(respuesta)) {
-      this.chollos = respuesta;
-      this.pintarMarcadores();
-    } else if (respuesta && 'data' in respuesta) { 
-      // Por si acaso tu servicio devuelve el objeto de Supabase
-      this.chollos = (respuesta as any).data;
+    // 2. Si la respuesta es nula o indefinida, abortamos
+    if (!respuesta) {
+      console.warn('No se recibió respuesta de Supabase en el mapa');
+      return;
+    }
+
+    // 3. Extraemos los datos de forma segura
+    // Esto evita el error "Cannot destructure property data"
+    const data = (respuesta as any).data || (Array.isArray(respuesta) ? respuesta : null);
+    
+    if (data && Array.isArray(data)) {
+      this.chollos = data;
       this.pintarMarcadores();
     }
+  } catch (e) {
+    console.error("Error final en mapa:", e);
   }
+}
 
   pintarMarcadores() {
     this.chollos.forEach(chollo => {
@@ -63,12 +72,24 @@ export class MapaPage implements OnInit {
     });
   }
 
-  private initMap(lat: number, lng: number) {
-    this.map = L.map('map').setView([lat, lng], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+private initMap(lat: number, lng: number) {
+  const mapOptions: any = {
+    tap: false,
+    wheelDebounceTime: 150
+  };
+
+  this.map = L.map('map', mapOptions).setView([lat, lng], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(this.map);
     
-    // Marcador del usuario (azul)
     L.marker([lat, lng]).addTo(this.map).bindPopup('Tú estás aquí').openPopup();
+
+    // Forzamos un re-cálculo del tamaño para que no se vea el mapa gris o bloqueado
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 500);
   }
 
   private configurarIconos() {

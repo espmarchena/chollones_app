@@ -36,7 +36,6 @@ import {
   imports: [
     CommonModule,
     RouterLink,
-
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -44,9 +43,7 @@ import {
     IonButton,
     IonIcon,
     IonSearchbar,
-
     IonTabs,
-    IonRouterOutlet,
     IonTabBar,
     IonTabButton,
     IonLabel

@@ -19,6 +19,20 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 </head>
 
+<script>
+  // ANULADOR DE BLOQUEOS: Evita que Supabase congele la aplicación
+  if (navigator.locks && navigator.locks.request) {
+    const originalRequest = navigator.locks.request.bind(navigator.locks);
+    navigator.locks.request = function(name, options, callback) {
+      // Si Supabase intenta pedir un bloqueo de autenticación, le decimos que OK de inmediato
+      if (name && name.includes('auth')) {
+        return Promise.resolve();
+      }
+      return originalRequest(name, options, callback);
+    };
+  }
+</script>
+
 <body>
   <app-root></app-root>
 </body>
