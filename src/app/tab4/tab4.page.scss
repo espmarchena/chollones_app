@@ -126,3 +126,31 @@ ion-searchbar {
   --height: 36px; // Altura del buscador reducida
   padding: 4px 12px;
 }
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+
+  .distance-text {
+    font-weight: 600;
+    color: var(--ion-color-tertiary);
+  }
+
+  .dot-separator {
+    margin: 0 4px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.navigation-button-container {
+  margin-top: 8px;
+  
+  ion-button {
+    --border-radius: 6px;
+    font-size: 0.75rem;
+    height: 30px;
+    margin: 0;
+  }
+}

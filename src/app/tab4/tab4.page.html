@@ -3,13 +3,18 @@
     <ion-title>Listado de Chollos</ion-title>
   </ion-toolbar>
   <ion-toolbar color="primary">
-    <ion-searchbar placeholder="Buscar ofertas..." (ionInput)="buscar($event)"></ion-searchbar>
+    <ion-searchbar 
+      placeholder="Buscar ofertas..." 
+      (ionInput)="buscar($event)"
+      animated="true">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
   <ion-list lines="full">
     <ion-item *ngFor="let chollo of filtrados" class="chollo-item">
+      
       <ion-thumbnail slot="start">
         <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
       </ion-thumbnail>
@@ -20,23 +25,44 @@
         <p class="info-row">
           <ion-icon name="storefront-outline" color="primary"></ion-icon>
           <span class="vendor-text">{{ chollo.proveedores?.nombre || 'Tienda' }}</span>
+          
+          <span class="dot-separator" *ngIf="chollo.distanciaKM !== '?'"> • </span>
+          
+          <ion-icon name="location-outline" color="tertiary" *ngIf="chollo.distanciaKM !== '?'"></ion-icon>
+          <span class="distance-text" *ngIf="chollo.distanciaKM !== '?'">
+            A {{ chollo.distanciaKM }} km
+          </span>
         </p>
 
         <p class="description-text">{{ chollo.descripcion }}</p>
 
         <div class="price-row">
-        <span class="current-price">{{ chollo.precio_actual }}€</span>
+          <span class="current-price">{{ chollo.precio_actual }}€</span>
 
-        <div class="savings-container" *ngIf="chollo.precio_original && chollo.precio_original > chollo.precio_actual">
+          <div class="savings-container" *ngIf="chollo.precio_original && chollo.precio_original > chollo.precio_actual">
             <span class="old-price">{{ chollo.precio_original }}€</span>
-            <span class="savings-amount">Ahorra: {{ (chollo.precio_original - chollo.precio_actual) | number:'1.2-2' }}€</span>
+            <span class="savings-amount">
+              Ahorra: {{ (chollo.precio_original - chollo.precio_actual) | number:'1.2-2' }}€
+            </span>
+          </div>
         </div>
+
+        <div class="navigation-button-container" *ngIf="chollo.lat && chollo.lng">
+          <ion-button 
+            fill="outline" 
+            size="small" 
+            color="success" 
+            (click)="abrirNavegacion(chollo)">
+            <ion-icon slot="start" name="navigate-outline"></ion-icon>
+            Cómo llegar
+          </ion-button>
         </div>
       </ion-label>
 
       <ion-badge slot="end" color="danger" *ngIf="calcDescuento(chollo) > 0">
         -{{ calcDescuento(chollo) }}%
       </ion-badge>
+
     </ion-item>
   </ion-list>
 </ion-content>
