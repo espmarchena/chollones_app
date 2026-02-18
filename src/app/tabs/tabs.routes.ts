@@ -3,7 +3,7 @@ import { TabsPage } from './tabs.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
@@ -32,23 +32,23 @@ export const routes: Routes = [
           import('../tab5/tab5.page').then((m) => m.Tab5Page),
       },
 
-      // ✅ AQUÍ el mapa (dentro de tabs)
-      {
-        path: 'mapa',
-        loadComponent: () =>
-          import('./mapa/mapa.page').then((m) => m.MapaPage),
-      },
+      // ✅ MAPA (carpeta src/app/mapa)
+{
+  path: 'mapa',
+  loadComponent: () =>
+    import('./mapa/mapa.page').then((m) => m.MapaPage),
+},
+{
+  path: 'categoria/:slug',
+  loadComponent: () =>
+    import('../categoria/categoria.page').then((m) => m.CategoriaPage),
+},
+{
+  path: '',
+  redirectTo: 'tab1',
+  pathMatch: 'full',
+},
 
-      {
-        path: '',
-        redirectTo: '/tabs/tab1',
-        pathMatch: 'full',
-      },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/tab1',
-    pathMatch: 'full',
   },
 ];

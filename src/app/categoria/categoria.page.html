@@ -1,0 +1,28 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>{{ tituloCategoria }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-text *ngIf="loading">Cargando...</ion-text>
+
+  <ion-text *ngIf="!loading && productos.length === 0">
+    No hay productos en esta categoría todavía.
+  </ion-text>
+
+  <ion-card *ngFor="let p of productos">
+    <img *ngIf="p.imagen_url" [src]="p.imagen_url" [alt]="p.titulo" />
+
+    <ion-card-header>
+      <ion-card-title>{{ p.titulo }}</ion-card-title>
+      <ion-card-subtitle *ngIf="p.precio != null">{{ p.precio }} €</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content *ngIf="p.descripcion">
+      {{ p.descripcion }}
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
