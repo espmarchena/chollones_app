@@ -61,16 +61,30 @@ async obtenerChollos() {
   }
 }
 
-  pintarMarcadores() {
-    this.chollos.forEach(chollo => {
-      // Solo pintamos si el chollo tiene coordenadas
-      if (chollo.lat && chollo.lng) {
-        L.marker([chollo.lat, chollo.lng])
-          .addTo(this.map)
-          .bindPopup(`<b>${chollo.titulo}</b><br>${chollo.precio}€`);
-      }
-    });
-  }
+pintarMarcadores() {
+  this.chollos.forEach(chollo => {
+    if (chollo.lat && chollo.lng) {
+      
+      // 1. Extraemos el nombre del proveedor de forma segura
+      // (Supabase lo devuelve dentro de un objeto 'proveedores')
+      const nombreProveedor = chollo.proveedores?.nombre || 'Proveedor desconocido';
+      
+      // 2. Usamos el precio correcto (asegúrate si es precio o precio_actual en tu base de datos)
+      const precio = chollo.precio_actual || chollo.precio || 0;
+
+      // 3. Añadimos el proveedor al HTML del popup
+      L.marker([chollo.lat, chollo.lng])
+        .addTo(this.map)
+        .bindPopup(`
+          <div style="text-align: center;">
+            <b style="font-size: 14px;">${chollo.titulo}</b><br>
+            <span style="color: #666; font-size: 12px;">${nombreProveedor}</span><br>
+            <b style="color: var(--ion-color-secondary); font-size: 14px;">${precio}€</b>
+          </div>
+        `);
+    }
+  });
+}
 
 private initMap(lat: number, lng: number) {
   const mapOptions: any = {
