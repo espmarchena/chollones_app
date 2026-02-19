@@ -64,12 +64,13 @@ export class Tab1Page implements OnInit {
   productosPopulares: any[] = [];
   chollosFiltrados: any[] = [];
   categorias = [
-    { nombre: 'Belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
-    { nombre: 'Moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
-    { nombre: 'Mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
-    { nombre: 'Cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png' },
-    { nombre: 'Marketing', img: 'https://cdn-icons-png.flaticon.com/512/3135/3135683.png' },
-    { nombre: 'Juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
+    { nombre: 'Belleza', slug: 'belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
+    { nombre: 'Moda', slug: 'moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
+    { nombre: 'Mascotas', slug: 'mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
+    { nombre: 'Cocina', slug: 'cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png' },
+    { nombre: 'Marketing', slug: 'marketing', img: 'https://cdn-icons-png.flaticon.com/512/3135/3135683.png' },
+    { nombre: 'Juguetes', slug: 'juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
+    { nombre: 'Digitalización', slug: 'digitalizacion', img: 'https://cdn-icons-png.flaticon.com/512/1006/1006363.png' },
   ];
 
   // Set para trackear IDs de favoritos
@@ -78,7 +79,7 @@ export class Tab1Page implements OnInit {
   constructor(
     private supabaseService: SupabaseService,
     private favoritosEvent: FavoritosEvent,
-    private router: Router
+    public router: Router
   ) {
     addIcons({
       searchOutline, heartOutline, heart, personOutline, bagOutline,
@@ -96,33 +97,33 @@ export class Tab1Page implements OnInit {
     await this.cargarFavoritos();
   }
 
-async cargarDatos() {
-  try {
-    const res = await this.supabaseService.getChollos();
+  async cargarDatos() {
+    try {
+      const res = await this.supabaseService.getChollos();
 
-    // Validamos que res no sea nulo y que sea un array (o contenga data como array)
-    const dataRaw = Array.isArray(res) ? res : (res as any)?.data;
+      // Validamos que res no sea nulo y que sea un array (o contenga data como array)
+      const dataRaw = Array.isArray(res) ? res : (res as any)?.data;
 
-    if (dataRaw && Array.isArray(dataRaw)) {
-      const dataMapeada = dataRaw.map((c: any) => ({
-        ...c,
-        titulo: c.titulo,
-        precioActual: c.precio_actual,
-        precioOriginal: c.precio_original,
-        imagen: c.imagen_url,
-        proveedor: c.proveedores?.nombre,
-        nuevo: this.esReciente(c.created_at)
-      }));
+      if (dataRaw && Array.isArray(dataRaw)) {
+        const dataMapeada = dataRaw.map((c: any) => ({
+          ...c,
+          titulo: c.titulo,
+          precioActual: c.precio_actual,
+          precioOriginal: c.precio_original,
+          imagen: c.imagen_url,
+          proveedor: c.proveedores?.nombre,
+          nuevo: this.esReciente(c.created_at)
+        }));
 
-      this.productosPopulares = dataMapeada;
-      this.chollosFiltrados = [...dataMapeada];
-    } else {
-      console.warn('No se pudieron cargar los datos o el formato es incorrecto');
+        this.productosPopulares = dataMapeada;
+        this.chollosFiltrados = [...dataMapeada];
+      } else {
+        console.warn('No se pudieron cargar los datos o el formato es incorrecto');
+      }
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
     }
-  } catch (error) {
-    console.error('Error al cargar datos:', error);
   }
-}
 
   async cargarFavoritos() {
     try {
@@ -151,6 +152,11 @@ async cargarDatos() {
   // Navegar a la pestaña de guardados
   irAGuardados() {
     this.router.navigate(['/tabs/tab3']);
+  }
+
+  // Navegar a una categoría
+  irACategoria(slug: string) {
+    this.router.navigate(['/tabs/categoria', slug]);
   }
 
   // Métodos para gestión de favoritos
