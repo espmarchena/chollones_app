@@ -85,7 +85,7 @@ export class SupabaseService {
 
       // BLINDAJE: Si response es null/undefined, devolvemos array vacío
       if (!response) return [];
-      
+
       // Acceso seguro a data
       const data = (response as any).data || [];
       return data;
@@ -109,7 +109,7 @@ export class SupabaseService {
 
       // NO usamos desestructuración { data } para evitar el crash
       const data = (response as any).data;
-      
+
       return Array.isArray(data) ? data : [];
     } catch (err) {
       console.error("Error recuperado en getChollos:", err);
@@ -167,5 +167,75 @@ export class SupabaseService {
 
   getUserActual() {
     return this.currentUser.value;
+  }
+
+  // --- MÉTODOS RESTAURADOS ---
+
+  /** Obtiene la lista de cupones válidos */
+  async getCupones() {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await this.supabase
+      .from('cupones')
+      .select('*')
+      .or(`valido_hasta.is.null,valido_hasta.gte.${today}`)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  /** Actualiza perfil (metadata) */
+  async updateProfile(data: { full_name?: string; phone?: string; address?: string; birth_date?: string, avatar_url?: string }) {
+    const { data: result, error } = await this.supabase.auth.updateUser({
+      data: data
+    });
+    if (error) throw error;
+    this.currentUser.next(result.user);
+    return result.user;
+  }
+
+  async updatePassword(newPassword: string) {
+    const { error } = await this.supabase.auth.updateUser({
+      password: newPassword
+    });
+    if (error) throw error;
+  }
+
+  async uploadAvatar(file: File): Promise<string> {
+    const user = this.getUserActual();
+    if (!user) throw new Error('Debes estar logueado');
+
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${user.id}/avatar.${fileExt}`;
+
+    try {
+      const { error: uploadError } = await this.supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = this.supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
+      await this.updateProfile({ avatar_url: avatarUrl });
+      return avatarUrl;
+    } catch (err) {
+      console.warn('Storage no disponible, guardando avatar en base64:', err);
+      const base64 = await this.fileToBase64(file);
+      await this.updateProfile({ avatar_url: base64 });
+      return base64;
+    }
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 }

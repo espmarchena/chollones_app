@@ -24,6 +24,10 @@ export const routes: Routes = [
       // ✅ CATEGORIA POR SLUG
       { path: 'categoria/:slug', loadComponent: () => import('./categoria/categoria.page').then(m => m.CategoriaPage) },
 
+      // Rutas restauradas
+      { path: 'editar-perfil', loadComponent: () => import('./editar-perfil/editar-perfil.page').then(m => m.EditarPerfilPage) },
+      { path: 'mis-alertas', loadComponent: () => import('./mis-alertas/mis-alertas.page').then(m => m.MisAlertasPage) },
+
       { path: '', redirectTo: 'tab1', pathMatch: 'full' },
     ],
   },
