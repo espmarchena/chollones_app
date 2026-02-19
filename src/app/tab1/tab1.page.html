@@ -1,4 +1,3 @@
-
 <ion-header class="header-red" translucent="true">
   <ion-toolbar>
     <div class="topbar">
@@ -34,7 +33,7 @@
       <div class="banner-kicker">CHOLLONES</div>
       <div class="banner-title">Los mejores chollos cerca de ti</div>
       <div class="banner-sub">Ahorra en productos y servicios en un solo clic</div>
-      <button class="banner-btn">Ver ofertas</button>
+      <button class="banner-btn" (click)="router.navigate(['/tabs/tab4'])">Ver ofertas</button>
     </div>
   </div>
 
@@ -136,7 +135,7 @@
     </div>
 
     <div class="cat-strip">
-      <div class="cat-item" *ngFor="let cat of categorias">
+      <div class="cat-item" *ngFor="let cat of categorias" (click)="irACategoria(cat.slug)">
         <img [src]="cat.img" />
         <div>{{ cat.nombre }}</div>
       </div>
