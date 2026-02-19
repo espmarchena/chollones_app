@@ -33,61 +33,60 @@ export class CategoriaPage implements OnInit {
 
   async ngOnInit() {
     this.slug = this.route.snapshot.paramMap.get('slug') || '';
-    // Pequeña pausa para asegurar que el cliente Supabase esté listo
-    setTimeout(async () => {
-      await this.cargarProductos();
+    setTimeout(() => {
+      this.cargarProductos();
     }, 100);
+  }
+
+  // Genera el título para la cabecera (ej: "digitalizacion" -> "Digitalizacion")
+  get tituloCategoria() {
+    if (!this.slug) return 'Categoría';
+    return this.slug.charAt(0).toUpperCase() + this.slug.slice(1);
   }
 
   async cargarProductos() {
     this.loading = true;
     
     try {
-      // 1. OBTENER LA CATEGORÍA
-      // Guardamos la respuesta completa en una variable neutra
-      const resCat = await this.supabase.client
+      // --- 1. BUSCAR LA CATEGORÍA (Sin desestructurar) ---
+      const respuestaCat = await this.supabase.client
         .from('categorias')
-        .select('id, nombre, slug')
-        .eq('slug', this.slug)
-        .limit(1);
+        .select('*')
+        .eq('slug', this.slug);
 
-      // BLINDAJE 1: Comprobamos si la respuesta existe y tiene datos
-      if (!resCat || !resCat.data || resCat.data.length === 0) {
-        console.warn('Categoría no encontrada en Supabase:', this.slug);
+      // Si la red falla o Supabase devuelve undefined/null
+      if (!respuestaCat || !respuestaCat.data || respuestaCat.data.length === 0) {
+        console.warn('⚠️ No se encontró la categoría:', this.slug);
         this.productos = [];
         this.loading = false;
         return;
       }
 
-      const categoriaId = resCat.data[0].id;
+      // Extraemos el ID de forma segura
+      const categoriaId = respuestaCat.data[0].id;
+      console.log('✅ Categoría encontrada. ID:', categoriaId);
 
-      // 2. OBTENER LOS PRODUCTOS
-      // Repetimos el proceso seguro para los chollos
-      const resChollos = await this.supabase.client
+      // --- 2. BUSCAR LOS CHOLLOS (Sin desestructurar) ---
+      const respuestaChollos = await this.supabase.client
         .from('chollos')
-        .select(`*, proveedores(nombre, logo)`)
+        .select('*, proveedores(nombre, logo)')
         .eq('categoria_id', categoriaId)
         .order('created_at', { ascending: false });
 
-      // BLINDAJE 2: Acceso seguro a los datos de los productos
-      if (resChollos && resChollos.data) {
-        this.productos = resChollos.data;
-        console.log(`Cargados ${this.productos.length} productos para: ${this.slug}`);
+      // Comprobamos si hay datos de chollos
+      if (respuestaChollos && respuestaChollos.data) {
+        this.productos = respuestaChollos.data;
+        console.log('✅ Chollos cargados:', this.productos.length);
       } else {
+        console.warn('⚠️ No hay chollos en esta categoría o hubo un error.');
         this.productos = [];
       }
 
-    } catch (err) {
-      console.error('Error crítico capturado:', err);
+    } catch (error) {
+      console.error('🔥 Error crítico atrapado en el código:', error);
       this.productos = [];
     } finally {
       this.loading = false;
     }
-  }
-
-  get tituloCategoria() {
-    if (!this.slug) return 'Categoría';
-    // Pone la primera letra en mayúscula (ej: digitalizacion -> Digitalizacion)
-    return this.slug.charAt(0).toUpperCase() + this.slug.slice(1);
   }
 }
