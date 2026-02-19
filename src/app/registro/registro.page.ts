@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, 
-  IonItem, IonLabel, IonInput, IonButton, 
-  IonButtons, IonBackButton 
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonItem, IonLabel, IonInput, IonButton,
+  IonButtons, IonBackButton
 } from '@ionic/angular/standalone';
 import { Router, RouterLink } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -16,9 +16,9 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['./registro.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,FormsModule, IonHeader, IonToolbar, IonTitle, IonContent, 
-    IonItem, IonLabel, IonInput, IonButton, 
-    IonButtons
+    CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent,
+    IonItem, IonLabel, IonInput, IonButton,
+    IonButtons, IonBackButton
   ]
 })
 export class RegistroPage {
@@ -31,7 +31,7 @@ export class RegistroPage {
     private router: Router,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController
-  ) {}
+  ) { }
 
   async registrarse() {
     if (!this.email || !this.password || !this.nombre) {

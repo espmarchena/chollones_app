@@ -1,31 +1,3 @@
-<ion-header class="header-red" translucent="true">
-  <ion-toolbar>
-    <div class="topbar">
-      <div class="brand">CHOLLONES</div>
-
-      <div class="search-wrap">
-        <ion-searchbar placeholder="Buscar cualquier cosa" (ionInput)="onSearch($event)"
-          class="searchbar"></ion-searchbar>
-      </div>
-
-      <ion-buttons slot="end">
-        <ion-button fill="clear" (click)="irAGuardados()">
-          <ion-icon name="heart-outline"></ion-icon>
-        </ion-button>
-
-        <ion-button fill="clear">
-          <ion-icon name="person-outline"></ion-icon>
-        </ion-button>
-
-        <ion-button fill="clear" class="cart-btn">
-          <ion-icon name="bag-outline"></ion-icon>
-          <span class="cart-badge">{{ cartCount }}</span>
-        </ion-button>
-      </ion-buttons>
-    </div>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content fullscreen>
   <!-- Banner grande -->
   <div class="banner" [style.background-image]="'url(' + bannerUrl + ')'">
