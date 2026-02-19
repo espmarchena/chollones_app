@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
-import { Router } from '@angular/router';
-import { SupabaseService } from '../services/supabase.service'; 
+import { 
+  IonContent, IonItem, IonLabel, IonInput, IonButton 
+} from '@ionic/angular/standalone';
+import { Router, RouterLink } from '@angular/router'; // Añadido RouterLink
+import { AlertController, LoadingController } from '@ionic/angular';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule] // <--- IMPORTANTE: Necesario para que funcione el HTML
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterLink, // Necesario para usar [routerLink] en el HTML
+    IonContent, IonItem, IonLabel, IonInput, IonButton
+  ]
 })
 export class LoginPage implements OnInit {
   email = '';
@@ -23,50 +31,38 @@ export class LoginPage implements OnInit {
     private loadingCtrl: LoadingController
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
+  // Función principal de Login unificada y blindada
   async handleLogin() {
-    const loading = await this.loadingCtrl.create();
+    if (!this.email || !this.password) {
+      this.showAlert('Atención', 'Por favor, introduce tu email y contraseña.');
+      return;
+    }
+
+    const loading = await this.loadingCtrl.create({ message: 'Iniciando sesión...' });
     await loading.present();
 
-    const { data, error } = await this.supabase.login(this.email, this.password);
-    await loading.dismiss();
+    try {
+      // Llamada segura sin desestructurar {} directamente para evitar errores de red
+      const respuesta = await this.supabase.login(this.email, this.password);
+      
+      await loading.dismiss();
 
-    if (error) {
-      this.showAlert('Error', error.message);
-    } else {
-      // Te redirijo a los TABS que configuramos en tus rutas
-      this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+      if (respuesta && respuesta.error) {
+        this.showAlert('Error', 'Credenciales incorrectas o usuario no encontrado.');
+      } else if (respuesta && respuesta.data) {
+        console.log('✅ Login exitoso');
+        // Redirigimos a la página principal
+        this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+      }
+    } catch (err) {
+      await loading.dismiss();
+      this.showAlert('Error crítico', 'Hubo un problema de conexión con el servidor.');
     }
   }
 
-  async handleSignUp() {
-    const loading = await this.loadingCtrl.create();
-    await loading.present();
-
-    const { error } = await this.supabase.registro(this.email, this.password, 'Nombre Usuario');
-    await loading.dismiss()
-
-    if (error) {
-      this.showAlert('Error', error.message);
-    } else {
-      this.showAlert('Registro exitoso', 'Por favor, verifica tu correo electrónico (si tienes confirmación activada) o inicia sesión.');
-    }
-  }
-
-  async onLogin() {
-  try {
-    await this.supabase.login(this.email, this.password);
-    // Al tener éxito, el BehaviorSubject en el servicio emite el nuevo usuario.
-    // El Tab 5 cambiará su vista automáticamente.
-    this.router.navigate(['/tabs/tab1']); 
-  } catch (error: any) {
-    // Aquí puedes mostrar un Toast o Alerta con error.message
-    console.log('Fallo el login', error.message);
-  }
-}
-
+  // Alerta genérica para mensajes al usuario
   async showAlert(header: string, message: string) {
     const alert = await this.alertCtrl.create({
       header,
