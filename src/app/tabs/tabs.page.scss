@@ -13,6 +13,8 @@
 }
 
 .top-search {
+  flex: 1;
+  /* ocupa el espacio restante */
   max-width: 520px;
   width: 100%;
   margin: 0 12px;
@@ -40,4 +42,17 @@
 
 .tabs-root ion-tab-bar {
   z-index: 10;
+}
+
+.main-header ion-toolbar {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-right: 8px;
+  /* space for buttons */
 }

@@ -1,24 +1,26 @@
 <ion-header class="main-header">
   <ion-toolbar color="primary">
 
-    <img src="assets/logo.jpg" class="header-logo" alt="Logo" />
+    <div class="toolbar-content">
+      <img src="assets/logo.jpg" class="header-logo" alt="Logo" />
 
-    <ion-searchbar class="top-search" placeholder="Buscar chollos..." animated="true">
-    </ion-searchbar>
+      <ion-searchbar class="top-search" placeholder="Buscar chollos..." animated="true">
+      </ion-searchbar>
 
-    <ion-buttons slot="end" class="top-actions">
-      <ion-button fill="clear" [routerLink]="['/tabs/tab3']">
-        <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
-      </ion-button>
+      <ion-buttons slot="end" class="top-actions">
+        <ion-button fill="clear" [routerLink]="['/tabs/tab3']">
+          <ion-icon slot="icon-only" name="heart-outline"></ion-icon>
+        </ion-button>
 
-      <ion-button fill="clear" [routerLink]="['/tabs/tab5']">
-        <ion-icon slot="icon-only" name="person-outline"></ion-icon>
-      </ion-button>
+        <ion-button fill="clear" [routerLink]="['/tabs/tab5']">
+          <ion-icon slot="icon-only" name="person-outline"></ion-icon>
+        </ion-button>
 
-      <ion-button fill="clear">
-        <ion-icon slot="icon-only" name="bag-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+        <ion-button fill="clear">
+          <ion-icon slot="icon-only" name="bag-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </div>
 
   </ion-toolbar>
 </ion-header>
