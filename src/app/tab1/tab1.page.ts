@@ -39,10 +39,10 @@ export class Tab1Page implements OnInit {
 
   // Listados de datos requeridos por el HTML (Corrige errores Imágenes 5 y 7)
   quickLinks = [
-    { title: 'Recientes', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop', bgColor: '#fff4cc' },
-    { title: 'Destacados', img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=600&auto=format&fit=crop', bgColor: '#e2e2e2' },
-    { title: 'Mejor valorados', img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop', bgColor: '#ffe2e6' },
-    { title: 'Mejores descuentos', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop', bgColor: '#e6f0fa' }
+    { id: 'recientes', title: 'Recientes', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop', bgColor: '#fff4cc' },
+    { id: 'destacados', title: 'Destacados', img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=600&auto=format&fit=crop', bgColor: '#e2e2e2' },
+    { id: 'valorados', title: 'Mejor valorados', img: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop', bgColor: '#ffe2e6' },
+    { id: 'descuento', title: 'Mejores descuentos', img: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=600&auto=format&fit=crop', bgColor: '#e6f0fa' }
   ];
 
   productosPopulares: any[] = [];

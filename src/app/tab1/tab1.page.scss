@@ -35,20 +35,12 @@ ion-button { --color: #fff; }
   .link { font-size: 13px; text-decoration: underline; font-weight: 700; color: #111; }
 }
 
-/* --- FILAS DE SCROLL (EL ARREGLO ESTÁ AQUÍ) --- */
-.quick-row,
-.popular-row,
-.cards-row,
-.cat-strip {
-  display: flex !important; /* Forzamos flexbox */
-  flex-wrap: nowrap !important; /* Impedimos que bajen de fila */
-  gap: 14px;
-  overflow-x: auto !important; /* Forzamos scroll horizontal */
-  overflow-y: hidden;
-  padding: 10px 0;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x pan-y !important; /* PERMITIMOS AMBOS MOVIMIENTOS */
-  overscroll-behavior-x: contain;
+/* Quick Links (Circulares) */
+.quick-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 4px 16px 20px;
 }
 
 /* Ocultar barra de scroll en navegadores */
@@ -56,14 +48,11 @@ ion-button { --color: #fff; }
 
 /* --- NUESTROS CHOLLOS (CÍRCULOS) --- */
 .quick-circle-item {
-  min-width: 140px;
-  max-width: 140px;
-  flex: 0 0 140px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  
   .circle-bg {
     width: 120px; height: 120px;
     border-radius: 50%;

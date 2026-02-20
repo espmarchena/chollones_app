@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList,
   IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
@@ -49,7 +49,8 @@ export class Tab4Page implements OnInit {
   constructor(
     private supabaseService: SupabaseService,
     private locationService: LocationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline });
   }
@@ -82,6 +83,19 @@ export class Tab4Page implements OnInit {
     }
 
     await this.cargarChollos();
+
+    // Check query params for active filter
+    this.route.queryParams.subscribe(params => {
+      if (params['filtro']) {
+        // Find if it's a valid quick filter
+        const isQuickFilter = this.filtrosRapidos.some(f => f.id === params['filtro']);
+        if (isQuickFilter) {
+          this.filtroRapidoSeleccionado = params['filtro'];
+          this.categoriaSeleccionada = 'todas';
+        }
+        this.aplicarFiltros();
+      }
+    });
   }
 
   async cargarChollos() {
