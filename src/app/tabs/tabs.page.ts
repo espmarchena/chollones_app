@@ -11,7 +11,8 @@ import {
   IonTabBar,
   IonTabButton,
   IonLabel,
-  IonSearchbar
+  IonSearchbar,
+  IonButton
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -41,7 +42,8 @@ import {
     IonTabs,
     IonTabBar,
     IonTabButton,
-    IonLabel
+    IonLabel,
+    IonButton
   ]
 })
 export class TabsPage {
