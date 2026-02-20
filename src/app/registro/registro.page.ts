@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonItem, IonLabel, IonInput, IonButton,
+  IonContent, IonItem, IonLabel, IonInput, IonButton,
   IonButtons, IonBackButton
 } from '@ionic/angular/standalone';
 import { Router, RouterLink } from '@angular/router';
@@ -16,7 +15,7 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['./registro.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, FormsModule, IonHeader, IonToolbar, IonTitle, IonContent,
+    CommonModule, FormsModule, IonContent,
     IonItem, IonLabel, IonInput, IonButton,
     IonButtons, IonBackButton
   ]
