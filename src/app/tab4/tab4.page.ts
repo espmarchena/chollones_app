@@ -42,6 +42,7 @@ export class Tab4Page implements OnInit {
   filtrosRapidos = [
     { id: 'recientes', nombre: 'Recientes' },
     { id: 'destacados', nombre: 'Destacados' },
+    { id: 'distancia', nombre: 'Distancia' },
     { id: 'valorados', nombre: 'Mejor valorados' },
     { id: 'descuento', nombre: 'Mejor descuento' }
   ];
@@ -193,6 +194,12 @@ export class Tab4Page implements OnInit {
         resultado = resultado.filter(c => c.punto?.estado === 'Caliente');
       } else if (this.filtroRapidoSeleccionado === 'descuento') {
         resultado.sort((a, b) => this.calcDescuento(b) - this.calcDescuento(a));
+      } else if (this.filtroRapidoSeleccionado === 'distancia') {
+        resultado.sort((a, b) => {
+          if (a.distanciaKM === '?') return 1;
+          if (b.distanciaKM === '?') return -1;
+          return parseFloat(a.distanciaKM) - parseFloat(b.distanciaKM);
+        });
       }
       // 'valorados' can either be sorted by an average rating if exists, otherwise do nothing
     } else {
