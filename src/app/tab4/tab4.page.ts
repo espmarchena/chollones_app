@@ -26,6 +26,7 @@ import { LocationService } from '../services/location.service';
   ]
 })
 export class Tab4Page implements OnInit {
+
   listadoChollos: any[] = [];
   filtrados: any[] = [];
   miLat: number = 0;
@@ -234,4 +235,10 @@ export class Tab4Page implements OnInit {
       window.open(googleMapsUrl, '_system');
     }
   }
+
+  irADetalle(id: string) {
+    console.log('Navegando al producto:', id); // Esto te ayuda a ver si hace clic
+    this.router.navigate(['/tabs/producto', id]);
+  }
+
 }

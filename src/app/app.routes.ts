@@ -28,6 +28,7 @@ export const routes: Routes = [
       // Rutas restauradas
       { path: 'editar-perfil', loadComponent: () => import('./editar-perfil/editar-perfil.page').then(m => m.EditarPerfilPage) },
       { path: 'mis-alertas', loadComponent: () => import('./mis-alertas/mis-alertas.page').then(m => m.MisAlertasPage) },
+      { path: 'producto/:id', loadComponent: () => import('./productos/productos.page').then(m => m.ProductosPage) },
 
       { path: '', redirectTo: 'tab1', pathMatch: 'full' },
     ],

@@ -1,0 +1,47 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab4"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Chollo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="producto">
+  <div class="header-image" [style.background-image]="'url(' + producto.imagen_url + ')'">
+    <div class="discount-badge" *ngIf="producto.precio_original">
+      {{ (((producto.precio_original - producto.precio_actual) / producto.precio_original) * 100).toFixed(0) }}% DTO
+    </div>
+  </div>
+
+  <div class="ion-padding">
+    <h1>{{ producto.titulo }}</h1>
+    
+    <ion-item lines="none" class="vendor-info">
+      <ion-avatar slot="start">
+        <img [src]="producto.proveedores?.logo || 'assets/placeholder.png'" />
+      </ion-avatar>
+      <ion-label>
+        <h3>Tienda: {{ producto.proveedores?.nombre }}</h3>
+        <p>Oferta verificada</p>
+      </ion-label>
+    </ion-item>
+
+    <div class="price-section">
+      <span class="current-price">{{ producto.precio_actual }}€</span>
+      <span class="old-price" *ngIf="producto.precio_original">{{ producto.precio_original }}€</span>
+    </div>
+
+    <p class="description-short"><b>Resumen:</b> {{ producto.descripcion }}</p>
+
+    <div class="long-description-container" *ngIf="producto.descripcion_larga">
+      <h3>Detalles de la oferta</h3>
+      <p class="description-long">{{ producto.descripcion_larga }}</p>
+    </div>
+
+    <ion-button expand="block" color="primary" class="ion-margin-top">
+      CANJEAR CUPÓN
+    </ion-button>
+    
+  </div>
+</ion-content>

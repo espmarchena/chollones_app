@@ -24,7 +24,7 @@
   </div>
 
   <ion-list lines="full">
-    <ion-item *ngFor="let chollo of filtrados" class="chollo-item">
+    <ion-item *ngFor="let chollo of filtrados" (click)="irADetalle(chollo.id)" class="chollo-item">
 
       <ion-thumbnail slot="start">
         <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
