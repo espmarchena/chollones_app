@@ -35,7 +35,7 @@ export class Tab2Page implements OnInit {
     this.loading = true;
 
     try {
-      const hidden = ['mascotas', 'cocina', 'juguetes'];
+      const hidden = ['', '', '']; //aqui escribimos los slug de las categorias que no queremos que se muestren
 
       const { data, error } = await this.supabase.client
         .from('categorias')
@@ -52,7 +52,7 @@ export class Tab2Page implements OnInit {
       // Adaptamos para que tu HTML pueda seguir usando "img"
       this.categorias = (data ?? []).map(c => ({
         ...c,
-        img: c.icono, // tu columna en supabase se llama icono
+        img: c.icono, // la columna en supabase se llama icono
       }));
 
     } finally {

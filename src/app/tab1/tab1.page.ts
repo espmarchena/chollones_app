@@ -48,13 +48,14 @@ export class Tab1Page implements OnInit {
   productosPopulares: any[] = [];
   chollosFiltrados: any[] = [];
   categorias = [
-    { nombre: 'Belleza', slug: 'belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
+    { nombre: 'Belleza y Bienestar', slug: 'belleza-bienestar', img: 'https://cdn-icons-png.flaticon.com/512/1005/1005786.png' },
     { nombre: 'Moda', slug: 'moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
     { nombre: 'Mascotas', slug: 'mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
     { nombre: 'Cocina', slug: 'cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png' },
     { nombre: 'Marketing', slug: 'marketing', img: 'https://cdn-icons-png.flaticon.com/512/3135/3135683.png' },
     { nombre: 'Juguetes', slug: 'juguetes', img: 'https://cdn-icons-png.flaticon.com/512/3082/3082060.png' },
-    { nombre: 'Digitalización', slug: 'digitalizacion', img: 'https://cdn-icons-png.flaticon.com/512/1006/1006363.png' },
+    { nombre: 'Electrónica', slug: 'electronica', img: 'https://cdn-icons-png.flaticon.com/512/1006/1006363.png' },
+    { nombre: 'Servicios Estéticos', slug: 'servicios-esteticos', img: 'https://cdn-icons-png.flaticon.com/512/7060/7060999.png' },
   ];
 
   // Set para trackear IDs de favoritos
