@@ -2,20 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; // Importar Router
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
-  IonSearchbar,
-  IonButtons,
-  IonButton,
-  IonIcon,
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonCard,
-  IonBadge,
-  IonText
+  IonIcon
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -40,12 +28,7 @@ import { FavoritosEvent } from '../services/favoritos-event';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader,
-    IonToolbar,
     IonContent,
-    IonSearchbar,
-    IonButtons,
-    IonButton,
     IonIcon
   ],
 })
