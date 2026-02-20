@@ -23,7 +23,6 @@
       </ion-avatar>
       <ion-label>
         <h3>Tienda: {{ producto.proveedores?.nombre }}</h3>
-        <p>Oferta verificada</p>
       </ion-label>
     </ion-item>
 
@@ -32,9 +31,7 @@
       <span class="old-price" *ngIf="producto.precio_original">{{ producto.precio_original }}€</span>
     </div>
 
-    <p class="description-short"><b>Resumen:</b> {{ producto.descripcion }}</p>
-
-    <div class="long-description-container" *ngIf="producto.descripcion_larga">
+    <div class="long-description-container" *ngIf="producto?.descripcion_larga">
       <h3>Detalles de la oferta</h3>
       <p class="description-long">{{ producto.descripcion_larga }}</p>
     </div>
@@ -42,6 +39,6 @@
     <ion-button expand="block" color="primary" class="ion-margin-top">
       CANJEAR CUPÓN
     </ion-button>
-    
+
   </div>
 </ion-content>
