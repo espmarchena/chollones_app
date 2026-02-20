@@ -2,16 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-  {
-    path: 'login',
-    loadComponent: () => import('./login/login.page').then(m => m.LoginPage),
-  },
 
-  {
-    path: 'registro',
-    loadComponent: () => import('./registro/registro.page').then( m => m.RegistroPage)
-  },
-  
+
   {
     path: 'tabs',
     loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
@@ -22,6 +14,10 @@ export const routes: Routes = [
       { path: 'tab3', loadComponent: () => import('./tab3/tab3.page').then(m => m.Tab3Page) },
       { path: 'tab4', loadComponent: () => import('./tab4/tab4.page').then(m => m.Tab4Page) },
       { path: 'tab5', loadComponent: () => import('./tab5/tab5.page').then(m => m.Tab5Page) },
+
+      // Auth pages moved here to keep tab bar visible
+      { path: 'login', loadComponent: () => import('./login/login.page').then(m => m.LoginPage) },
+      { path: 'registro', loadComponent: () => import('./registro/registro.page').then(m => m.RegistroPage) },
 
       // ✅ MAPA (está en src/app/tabs/mapa)
       { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },

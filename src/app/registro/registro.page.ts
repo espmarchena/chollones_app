@@ -50,7 +50,7 @@ export class RegistroPage {
         this.mostrarAlerta('Error', res.error.message);
       } else {
         this.mostrarAlerta('¡Éxito!', 'Cuenta creada. Ahora puedes loguearte.');
-        this.router.navigateByUrl('/login');
+        this.router.navigateByUrl('/tabs/login');
       }
     } catch (err) {
       await loading.dismiss();

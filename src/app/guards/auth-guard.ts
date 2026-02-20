@@ -17,7 +17,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       } else {
         // Si es null, BLOQUEA y redirige al Login
         console.log('Acceso denegado: Usuario no logueado');
-        router.navigate(['/login']); 
+        router.navigate(['/tabs/login']);
         return false;
       }
     })

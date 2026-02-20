@@ -1,7 +1,8 @@
 // Contenedor principal para centrar el contenido
 ion-content {
   --background: #f4f5f8; // Un gris muy claro para que resalten los campos
-  
+  --padding-top: 70px;
+
   .registro-container {
     padding: 20px;
     display: flex;
@@ -33,7 +34,7 @@ ion-item {
   --inner-padding-end: 15px;
   --background: #ffffff;
   margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 
   ion-label {
