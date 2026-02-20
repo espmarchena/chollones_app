@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList,
   IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
@@ -54,7 +55,8 @@ export class Tab4Page implements OnInit {
 
   constructor(
     private supabaseService: SupabaseService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router
   ) {
     addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline });
   }
