@@ -2,10 +2,6 @@
   <ion-toolbar color="primary">
     <ion-title>Listado de Chollos</ion-title>
   </ion-toolbar>
-  <ion-toolbar color="primary">
-    <ion-searchbar placeholder="Buscar ofertas..." (ionInput)="buscar($event)" animated="true">
-    </ion-searchbar>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
@@ -63,10 +59,15 @@
           </div>
         </div>
 
-        <div class="navigation-button-container" *ngIf="chollo.lat && chollo.lng">
-          <ion-button fill="outline" size="small" color="tertiary" (click)="abrirNavegacion(chollo)">
+        <div class="action-buttons-container">
+          <ion-button fill="outline" size="small" color="secondary" *ngIf="chollo.lat && chollo.lng"
+            (click)="abrirNavegacion(chollo)">
             <ion-icon slot="start" name="navigate-outline"></ion-icon>
             Cómo llegar
+          </ion-button>
+
+          <ion-button size="small" color="secondary">
+            Añadir al carrito
           </ion-button>
         </div>
       </ion-label>

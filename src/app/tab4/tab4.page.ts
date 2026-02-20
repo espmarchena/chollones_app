@@ -35,15 +35,8 @@ export class Tab4Page implements OnInit {
   categoriaSeleccionada = 'todas';
   filtroRapidoSeleccionado = '';
 
-  categorias = [
-    { nombre: 'Todas', slug: 'todas' },
-    { nombre: 'Belleza', slug: 'belleza' },
-    { nombre: 'Moda', slug: 'moda' },
-    { nombre: 'Mascotas', slug: 'mascotas' },
-    { nombre: 'Cocina', slug: 'cocina' },
-    { nombre: 'Marketing', slug: 'marketing' },
-    { nombre: 'Juguetes', slug: 'juguetes' },
-    { nombre: 'Digitalización', slug: 'digitalizacion' },
+  categorias: any[] = [
+    { nombre: 'Todas', slug: 'todas' }
   ];
 
   filtrosRapidos = [
@@ -70,6 +63,22 @@ export class Tab4Page implements OnInit {
       console.warn('GPS no disponible, usando Sevilla por defecto');
       this.miLat = 37.3891;
       this.miLng = -5.9845;
+    }
+
+    try {
+      const { data: cats } = await this.supabaseService.client
+        .from('categorias')
+        .select('nombre, slug')
+        .order('nombre');
+
+      if (cats && cats.length > 0) {
+        this.categorias = [
+          { nombre: 'Todas', slug: 'todas' },
+          ...cats
+        ];
+      }
+    } catch (err) {
+      console.error('Error cargando categorias en tab4', err);
     }
 
     await this.cargarChollos();
@@ -154,8 +163,7 @@ export class Tab4Page implements OnInit {
     // 2. Filtrar por categoría
     if (this.categoriaSeleccionada !== 'todas') {
       resultado = resultado.filter(c =>
-        (c.categoria || '').toLowerCase() === this.categoriaSeleccionada ||
-        (c.categoria_slug || '').toLowerCase() === this.categoriaSeleccionada
+        (c.categorias?.slug || '').toLowerCase() === this.categoriaSeleccionada
       );
     }
 

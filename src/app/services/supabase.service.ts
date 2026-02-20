@@ -66,7 +66,7 @@ export class SupabaseService {
     try {
       const response = await this.supabase
         .from('chollos')
-        .select('*, proveedores(nombre)')
+        .select('*, proveedores(nombre), categorias(nombre, slug)')
         .order('created_at', { ascending: false });
 
       if (!response || response.error) {

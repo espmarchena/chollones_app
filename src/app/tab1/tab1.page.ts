@@ -48,7 +48,7 @@ export class Tab1Page implements OnInit {
   productosPopulares: any[] = [];
   chollosFiltrados: any[] = [];
   categorias = [
-    { nombre: 'Belleza', slug: 'belleza', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
+    { nombre: 'Belleza', slug: 'belleza-bienestar', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png' },
     { nombre: 'Moda', slug: 'moda', img: 'https://cdn-icons-png.flaticon.com/512/892/892458.png' },
     { nombre: 'Mascotas', slug: 'mascotas', img: 'https://cdn-icons-png.flaticon.com/512/616/616408.png' },
     { nombre: 'Cocina', slug: 'cocina', img: 'https://cdn-icons-png.flaticon.com/512/1046/1046784.png' },
