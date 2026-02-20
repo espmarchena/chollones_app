@@ -1,0 +1,21 @@
+img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.precios {
+  margin-top: 8px;
+}
+
+.actual {
+  font-weight: bold;
+  font-size: 18px;
+  color: #2ecc71;
+}
+
+.original {
+  margin-left: 8px;
+  text-decoration: line-through;
+  color: #999;
+}

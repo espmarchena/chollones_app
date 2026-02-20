@@ -12,17 +12,27 @@
     No hay productos en esta categoría todavía.
   </ion-text>
 
-  <ion-card *ngFor="let p of productos">
-    <img *ngIf="p.imagen_url" [src]="p.imagen_url" [alt]="p.titulo" />
+ <ion-card *ngFor="let p of productos">
+  <img [src]="p.imagen_url" *ngIf="p.imagen_url" />
 
-    <ion-card-header>
-      <ion-card-title>{{ p.titulo }}</ion-card-title>
-      <ion-card-subtitle *ngIf="p.precio != null">{{ p.precio }} €</ion-card-subtitle>
-    </ion-card-header>
+  <ion-card-header>
+    <ion-card-title>{{ p.titulo }}</ion-card-title>
+    <ion-card-subtitle *ngIf="p.proveedores">
+      {{ p.proveedores.nombre }}
+    </ion-card-subtitle>
+  </ion-card-header>
 
-    <ion-card-content *ngIf="p.descripcion">
-      {{ p.descripcion }}
-    </ion-card-content>
-  </ion-card>
+  <ion-card-content>
+    <p>{{ p.descripcion }}</p>
+
+    <div class="precios">
+      <span class="actual">{{ p.precio_actual }}€</span>
+      <span class="original" *ngIf="p.precio_original">
+        {{ p.precio_original }}€
+      </span>
+    </div>
+  </ion-card-content>
+</ion-card>
+
 
 </ion-content>

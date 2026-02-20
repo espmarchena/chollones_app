@@ -33,12 +33,9 @@ export class CategoriaPage implements OnInit {
 
   async ngOnInit() {
     this.slug = this.route.snapshot.paramMap.get('slug') || '';
-    setTimeout(() => {
-      this.cargarProductos();
-    }, 100);
+    await this.cargarProductos();
   }
 
-  // Genera el título para la cabecera (ej: "digitalizacion" -> "Digitalizacion")
   get tituloCategoria() {
     if (!this.slug) return 'Categoría';
     return this.slug.charAt(0).toUpperCase() + this.slug.slice(1);
@@ -46,44 +43,48 @@ export class CategoriaPage implements OnInit {
 
   async cargarProductos() {
     this.loading = true;
-    
-    try {
-      // --- 1. BUSCAR LA CATEGORÍA (Sin desestructurar) ---
-      const respuestaCat = await this.supabase.client
-        .from('categorias')
-        .select('*')
-        .eq('slug', this.slug);
 
-      // Si la red falla o Supabase devuelve undefined/null
-      if (!respuestaCat || !respuestaCat.data || respuestaCat.data.length === 0) {
-        console.warn('⚠️ No se encontró la categoría:', this.slug);
+    try {
+      // 1) Buscar categoría por slug
+      const { data: cat, error: catError } = await this.supabase.client
+        .from('categorias')
+        .select('id, nombre, slug')
+        .eq('slug', this.slug)
+        .single();
+
+      if (catError) {
+        console.error('❌ Error cargando categoría:', catError);
         this.productos = [];
-        this.loading = false;
         return;
       }
 
-      // Extraemos el ID de forma segura
-      const categoriaId = respuestaCat.data[0].id;
+      if (!cat?.id) {
+        console.warn('⚠️ No se encontró la categoría:', this.slug);
+        this.productos = [];
+        return;
+      }
+
+      const categoriaId = cat.id;
       console.log('✅ Categoría encontrada. ID:', categoriaId);
 
-      // --- 2. BUSCAR LOS CHOLLOS (Sin desestructurar) ---
-      const respuestaChollos = await this.supabase.client
+      // 2) Buscar chollos por categoria_id
+      const { data: chollos, error: chollosError } = await this.supabase.client
         .from('chollos')
         .select('*, proveedores(nombre, logo)')
         .eq('categoria_id', categoriaId)
         .order('created_at', { ascending: false });
 
-      // Comprobamos si hay datos de chollos
-      if (respuestaChollos && respuestaChollos.data) {
-        this.productos = respuestaChollos.data;
-        console.log('✅ Chollos cargados:', this.productos.length);
-      } else {
-        console.warn('⚠️ No hay chollos en esta categoría o hubo un error.');
+      if (chollosError) {
+        console.error('❌ Error cargando chollos:', chollosError);
         this.productos = [];
+        return;
       }
 
+      this.productos = chollos ?? [];
+      console.log('✅ Chollos cargados:', this.productos.length);
+
     } catch (error) {
-      console.error('🔥 Error crítico atrapado en el código:', error);
+      console.error('🔥 Error crítico:', error);
       this.productos = [];
     } finally {
       this.loading = false;
