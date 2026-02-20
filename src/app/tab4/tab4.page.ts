@@ -109,12 +109,16 @@ export class Tab4Page implements OnInit {
       if (chollos && Array.isArray(chollos)) {
 
         this.listadoChollos = chollos.map(c => {
+          const pLat = c.proveedores?.lat;
+          const pLng = c.proveedores?.lng;
           // Lógica de distancia
-          if (c.lat && c.lng) {
-            const d = this.locationService.calcularDistancia(this.miLat, this.miLng, c.lat, c.lng);
-            return { ...c, distanciaKM: d.toFixed(1) };
+
+          let distancia = '?';
+          if (pLat && pLng) {
+            const d = this.locationService.calcularDistancia(this.miLat, this.miLng, pLat, pLng);
+            distancia = d.toFixed(1);
           }
-          return { ...c, distanciaKM: '?' };
+          return { ...c, distanciaKM: distancia, lat: pLat, lng: pLng };
         });
 
         // Ordenar por cercanía
