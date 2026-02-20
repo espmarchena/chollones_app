@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonList, 
-  IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton 
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent, IonList,
+  IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { 
-  storefrontOutline, 
-  informationCircleOutline, 
-  locationOutline, 
-  navigateOutline 
+import {
+  storefrontOutline,
+  informationCircleOutline,
+  locationOutline,
+  navigateOutline
 } from 'ionicons/icons';
 import { SupabaseService } from '../services/supabase.service';
 import { LocationService } from '../services/location.service';
@@ -20,7 +20,7 @@ import { LocationService } from '../services/location.service';
   styleUrls: ['./tab4.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, 
+    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
     IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
   ]
 })
@@ -30,8 +30,30 @@ export class Tab4Page implements OnInit {
   miLat: number = 0;
   miLng: number = 0;
 
+  textoBusqueda = '';
+  categoriaSeleccionada = 'todas';
+  filtroRapidoSeleccionado = '';
+
+  categorias = [
+    { nombre: 'Todas', slug: 'todas' },
+    { nombre: 'Belleza', slug: 'belleza' },
+    { nombre: 'Moda', slug: 'moda' },
+    { nombre: 'Mascotas', slug: 'mascotas' },
+    { nombre: 'Cocina', slug: 'cocina' },
+    { nombre: 'Marketing', slug: 'marketing' },
+    { nombre: 'Juguetes', slug: 'juguetes' },
+    { nombre: 'Digitalización', slug: 'digitalizacion' },
+  ];
+
+  filtrosRapidos = [
+    { id: 'recientes', nombre: 'Recientes' },
+    { id: 'destacados', nombre: 'Destacados' },
+    { id: 'valorados', nombre: 'Mejor valorados' },
+    { id: 'descuento', nombre: 'Mejor descuento' }
+  ];
+
   constructor(
-    private supabaseService: SupabaseService, 
+    private supabaseService: SupabaseService,
     private locationService: LocationService
   ) {
     addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline });
@@ -44,10 +66,10 @@ export class Tab4Page implements OnInit {
       this.miLng = coords.longitude;
     } catch (e) {
       console.warn('GPS no disponible, usando Sevilla por defecto');
-      this.miLat = 37.3891; 
+      this.miLat = 37.3891;
       this.miLng = -5.9845;
     }
-    
+
     await this.cargarChollos();
   }
 
@@ -59,7 +81,7 @@ export class Tab4Page implements OnInit {
       // 2. VALIDACIÓN SIMPLE: Solo comprobamos que sea un array
       // Ya no hace falta buscar .data ni hacer casting raro
       if (chollos && Array.isArray(chollos)) {
-        
+
         this.listadoChollos = chollos.map(c => {
           // Lógica de distancia
           if (c.lat && c.lng) {
@@ -97,15 +119,68 @@ export class Tab4Page implements OnInit {
   }
 
   buscar(event: any) {
-    const texto = (event.target.value || '').toLowerCase().trim();
-    if (!texto) {
-      this.filtrados = [...this.listadoChollos];
-      return;
+    this.textoBusqueda = (event.target.value || '').toLowerCase().trim();
+    this.aplicarFiltros();
+  }
+
+  seleccionarCategoria(slug: string) {
+    this.categoriaSeleccionada = slug;
+    this.aplicarFiltros();
+  }
+
+  seleccionarFiltroRapido(id: string) {
+    if (this.filtroRapidoSeleccionado === id) {
+      this.filtroRapidoSeleccionado = ''; // Deseleccionar
+    } else {
+      this.filtroRapidoSeleccionado = id;
     }
-    this.filtrados = this.listadoChollos.filter(c => 
-      c.titulo.toLowerCase().includes(texto) || 
-      c.proveedores?.nombre?.toLowerCase().includes(texto)
-    );
+    this.aplicarFiltros();
+  }
+
+  aplicarFiltros() {
+    let resultado = [...this.listadoChollos];
+
+    // 1. Filtrar por texto
+    if (this.textoBusqueda) {
+      resultado = resultado.filter(c =>
+        (c.titulo || '').toLowerCase().includes(this.textoBusqueda) ||
+        (c.proveedores?.nombre || '').toLowerCase().includes(this.textoBusqueda) ||
+        (c.descripcion || '').toLowerCase().includes(this.textoBusqueda)
+      );
+    }
+
+    // 2. Filtrar por categoría
+    if (this.categoriaSeleccionada !== 'todas') {
+      resultado = resultado.filter(c =>
+        (c.categoria || '').toLowerCase() === this.categoriaSeleccionada ||
+        (c.categoria_slug || '').toLowerCase() === this.categoriaSeleccionada
+      );
+    }
+
+    // 3. Filtros rápidos
+    if (this.filtroRapidoSeleccionado) {
+      if (this.filtroRapidoSeleccionado === 'recientes') {
+        resultado.sort((a, b) => {
+          const tA = new Date(a.created_at || 0).getTime();
+          const tB = new Date(b.created_at || 0).getTime();
+          return tB - tA;
+        });
+      } else if (this.filtroRapidoSeleccionado === 'destacados') {
+        resultado = resultado.filter(c => c.punto?.estado === 'Caliente');
+      } else if (this.filtroRapidoSeleccionado === 'descuento') {
+        resultado.sort((a, b) => this.calcDescuento(b) - this.calcDescuento(a));
+      }
+      // 'valorados' can either be sorted by an average rating if exists, otherwise do nothing
+    } else {
+      // Orden por cercanía por defecto
+      resultado.sort((a, b) => {
+        if (a.distanciaKM === '?') return 1;
+        if (b.distanciaKM === '?') return -1;
+        return parseFloat(a.distanciaKM) - parseFloat(b.distanciaKM);
+      });
+    }
+
+    this.filtrados = resultado;
   }
 
   abrirNavegacion(chollo: any) {
@@ -113,7 +188,7 @@ export class Tab4Page implements OnInit {
 
     const lat = chollo.lat;
     const lng = chollo.lng;
-    
+
     // HE CORREGIDO TUS URLS. La que tenías de googleusercontent no iba a funcionar.
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     const appleMapsUrl = `maps://maps.apple.com/?daddr=${lat},${lng}`;
