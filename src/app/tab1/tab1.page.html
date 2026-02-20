@@ -34,8 +34,11 @@
 
     <div class="popular-row">
       <div class="product-card" *ngFor="let p of productosPopulares">
-        <div class="pill" *ngIf="p.nuevo">Nuevo</div>
-        <div class="disc" *ngIf="p.descuento">{{ p.descuento }}%</div>
+        <div class="disc" *ngIf="p.descuento">-{{ p.descuento }}%</div>
+
+        <div class="fav-icon" (click)="toggleFavorito(p, $event)" [class.active]="isFavorito(p.id)">
+          <ion-icon name="heart"></ion-icon>
+        </div>
 
         <img class="product-img" [src]="p.imagen" />
 
@@ -45,16 +48,12 @@
           <div class="product-prov">{{ p.proveedor }}</div>
 
           <div class="product-prices">
-            <span class="p-now">{{ p.precioActual }}€</span>
-            <span class="p-old" *ngIf="p.precioOriginal">{{ p.precioOriginal }}€</span>
+            <span class="p-now">{{ p.precioActual | number:'1.2-2' }}€</span>
+            <span class="p-old" *ngIf="p.precioOriginal">{{ p.precioOriginal | number:'1.2-2' }}€</span>
           </div>
 
-          <button class="btn-buy">+ {{ p.precioActual }} €</button>
+          <button class="btn-buy">{{ p.precioActual }} €</button>
           <button class="btn-cart">Añadir al carrito</button>
-
-          <div class="fav" (click)="toggleFavorito(p, $event)">
-            <ion-icon [name]="isFavorito(p.id) ? 'heart' : 'heart-outline'"></ion-icon>
-          </div>
         </div>
       </div>
     </div>
@@ -68,32 +67,34 @@
     </div>
 
     <div class="cards-row">
-      <div class="chollo-card" *ngFor="let c of chollosFiltrados">
-        <div class="badge" [class.badge-hot]="c?.punto?.estado === 'Caliente'">
-          {{ calcDescuento(c) }}%
+      <div class="product-card" *ngFor="let c of chollosFiltrados">
+        <div class="disc" [class.badge-hot]="c?.punto?.estado === 'Caliente'">
+          -{{ calcDescuento(c) }}%
         </div>
 
-        <div class="fav-icon" (click)="toggleFavorito(c, $event)">
-          <ion-icon [name]="isFavorito(c.id) ? 'heart' : 'heart-outline'"></ion-icon>
+        <div class="fav-icon" (click)="toggleFavorito(c, $event)" [class.active]="isFavorito(c.id)">
+          <ion-icon name="heart"></ion-icon>
         </div>
 
-        <img class="cover"
+        <img class="product-img"
           [src]="c?.imagen || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200&auto=format&fit=crop'" />
 
-        <div class="meta">
-          <div class="provider">
-            <img class="logo" [src]="c?.proveedor?.logo" />
+        <div class="product-body">
+          <div class="product-prov" *ngIf="c?.proveedor">
+            <img class="logo" [src]="c?.proveedor?.logo"
+              style="width:20px;height:20px;border-radius:50%;object-fit:cover;" *ngIf="c?.proveedor?.logo" />
             <span>{{ c?.proveedor?.nombre }}</span>
           </div>
 
-          <div class="title">{{ c?.titulo }}</div>
+          <div class="product-title">{{ c?.titulo }}</div>
 
-          <div class="prices">
-            <span class="now">{{ c?.precio_actual | number:'1.2-2' }}€</span>
-            <span class="old">{{ c?.precio_original | number:'1.2-2' }}€</span>
+          <div class="product-prices">
+            <span class="p-now">{{ c?.precio_actual | number:'1.2-2' }}€</span>
+            <span class="p-old" *ngIf="c?.precio_original">{{ c?.precio_original | number:'1.2-2' }}€</span>
           </div>
 
-          <button class="btn-add">+ {{ c?.precio_actual | number:'1.0-0' }} €</button>
+          <button class="btn-buy">{{ c?.precio_actual | number:'1.0-0' }} €</button>
+          <button class="btn-cart">Añadir al carrito</button>
         </div>
       </div>
     </div>
