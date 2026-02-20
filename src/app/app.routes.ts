@@ -2,11 +2,10 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-
-
   {
     path: 'tabs',
-    loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
+    loadComponent: () =>
+      import('./tabs/tabs.page').then(m => m.TabsPage),
     // canActivate: [authGuard],
     children: [
       { path: 'tab1', loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page) },
@@ -19,19 +18,30 @@ export const routes: Routes = [
       { path: 'login', loadComponent: () => import('./login/login.page').then(m => m.LoginPage) },
       { path: 'registro', loadComponent: () => import('./registro/registro.page').then(m => m.RegistroPage) },
 
-      // ✅ MAPA (está en src/app/tabs/mapa)
+      // MAPA
       { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },
 
-      // ✅ CATEGORIA POR SLUG
+      // CATEGORIA
       { path: 'categoria/:slug', loadComponent: () => import('./categoria/categoria.page').then(m => m.CategoriaPage) },
+
+      // ✅ PRODUCTO (DETALLE)  <-- AÑADIDO
+      {
+        path: 'producto/:id',
+        loadComponent: () =>
+          import('./productos/productos.page').then(m => m.ProductoPage),
+      },
 
       // Rutas restauradas
       { path: 'editar-perfil', loadComponent: () => import('./editar-perfil/editar-perfil.page').then(m => m.EditarPerfilPage) },
       { path: 'mis-alertas', loadComponent: () => import('./mis-alertas/mis-alertas.page').then(m => m.MisAlertasPage) },
 
+      // default
       { path: '', redirectTo: 'tab1', pathMatch: 'full' },
     ],
   },
+
+  // ✅ OPCIONAL: si alguien navega a /producto/:id, lo mandamos a tabs/producto/:id
+  { path: 'producto/:id', redirectTo: 'tabs/producto/:id', pathMatch: 'full' },
 
   { path: '', redirectTo: '/tabs/tab1', pathMatch: 'full' },
   { path: '**', redirectTo: '/tabs/tab1' },

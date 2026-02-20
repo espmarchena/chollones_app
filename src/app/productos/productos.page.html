@@ -1,0 +1,153 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ producto?.nombre || 'Producto' }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleWishlist()">
+        <ion-icon [name]="enWishlist ? 'heart' : 'heartOutline'"></ion-icon>
+      </ion-button>
+      <ion-button (click)="denunciarAbuso()">
+        <ion-icon name="flagOutline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <div class="wrap" *ngIf="!loading; else loadingTpl">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-img">
+        <img [src]="producto?.imagen_url" alt="" />
+      </div>
+
+      <div class="hero-info">
+        <h1 class="title">{{ producto?.nombre }}</h1>
+
+        <div class="meta">
+          <ion-chip *ngIf="producto?.stock > 0" class="stock ok">
+            <ion-label>Disponible en stock</ion-label>
+          </ion-chip>
+          <ion-chip *ngIf="producto?.stock <= 0" class="stock no">
+            <ion-label>Sin stock</ion-label>
+          </ion-chip>
+
+          <div class="price" *ngIf="producto?.precio != null">
+            {{ producto?.precio | currency:'EUR' }}
+          </div>
+        </div>
+
+        <div class="store" *ngIf="producto?.tienda">
+          <span class="label">Tienda</span>
+          <span class="value">{{ producto?.tienda }}</span>
+        </div>
+
+        <!-- “cards” tipo: ve a tu servicio / recibe de forma inmediata -->
+        <div class="mini-cards">
+          <div class="mini-card">
+            <div class="t1">Ve a por tu servicio en el mejor momento</div>
+            <div class="t2">Ver detalles</div>
+          </div>
+          <div class="mini-card">
+            <div class="t1">Recibe tu servicio de forma inmediata</div>
+            <div class="t2">Ver detalles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <section class="section">
+      <h2>Descripción</h2>
+      <div class="desc" [innerHTML]="descripcionSafe"></div>
+    </section>
+
+    <!-- ACORDEONES -->
+    <section class="section">
+      <ion-accordion-group>
+        <ion-accordion value="envio">
+          <ion-item slot="header">
+            <ion-label>Envío</ion-label>
+          </ion-item>
+          <div class="acc-body" slot="content">
+            <p>{{ producto?.envio_info || 'Información de envío próximamente.' }}</p>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="faq">
+          <ion-item slot="header">
+            <ion-label>Preguntas y respuestas</ion-label>
+          </ion-item>
+          <div class="acc-body" slot="content">
+            <p>{{ producto?.faq || 'Aún no hay preguntas.' }}</p>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="ubicacion">
+          <ion-item slot="header">
+            <ion-label>Ubicación</ion-label>
+          </ion-item>
+          <div class="acc-body" slot="content">
+            <p>{{ producto?.ubicacion || 'Ubicación no disponible.' }}</p>
+          </div>
+        </ion-accordion>
+
+        <ion-accordion value="consulta">
+          <ion-item slot="header">
+            <ion-label>Consulta sobre el producto</ion-label>
+          </ion-item>
+          <div class="acc-body" slot="content">
+            <p>Pronto añadiremos un formulario aquí.</p>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </section>
+
+    <!-- VALORACIONES -->
+    <section class="section">
+      <h2>Valoraciones ({{ producto?.num_valoraciones || 0 }})</h2>
+      <div class="ratings-box">
+        <div class="score">{{ producto?.rating_media || '0.0' }}</div>
+        <div class="hint">No hay valoraciones aún.</div>
+      </div>
+    </section>
+
+    <!-- SIMILARES -->
+    <section class="section" *ngIf="similares?.length">
+      <h2>Productos similares</h2>
+
+      <div class="similares">
+        <ion-card
+          class="sim-card"
+          *ngFor="let s of similares"
+          button
+          [routerLink]="['/tabs/producto', s.slug]"
+        >
+          <img [src]="s.imagen_url" alt="" />
+          <ion-card-header>
+            <ion-card-title>{{ s.nombre }}</ion-card-title>
+            <ion-card-subtitle *ngIf="s.precio != null">
+              {{ s.precio | currency:'EUR' }}
+            </ion-card-subtitle>
+            <ion-card-subtitle *ngIf="s.tienda">
+              {{ s.tienda }}
+            </ion-card-subtitle>
+          </ion-card-header>
+        </ion-card>
+      </div>
+    </section>
+
+    <div class="bottom-space"></div>
+  </div>
+
+  <ng-template #loadingTpl>
+    <div class="loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando producto…</p>
+    </div>
+  </ng-template>
+</ion-content>

@@ -219,5 +219,70 @@ export class SupabaseService {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
+    
+  }
+    // --- DETALLE DE CHOLLO (PÁGINA PRODUCTO) ---
+
+  async getCholloById(id: string): Promise<any | null> {
+    try {
+      const response = await this.supabase
+        .from('chollos')
+        .select(`
+          *,
+          categorias (id, nombre, slug),
+          proveedores (id, nombre, lat, lng)
+        `)
+        .eq('id', id)
+        .single();
+
+      if (!response || response.error) {
+        console.warn('Error u omisión de datos en getCholloById:', response?.error);
+        return null;
+      }
+
+      return response.data ?? null;
+    } catch (err) {
+      console.error('Fallo crítico en getCholloById:', err);
+      return null;
+    }
+  }
+
+  async getChollosSimilares(params: {
+    categoriaId?: string | null;
+    proveedorId?: string | null;
+    excludeId: string;
+    limit?: number;
+  }): Promise<any[]> {
+    const { categoriaId = null, proveedorId = null, excludeId, limit = 10 } = params;
+
+    try {
+      // Preferimos similares por categoría, si no por proveedor
+      let query = this.supabase
+        .from('chollos')
+        .select(`
+          id, titulo, descripcion, precio_actual, precio_original, imagen_url, created_at,
+          categorias (id, nombre, slug),
+          proveedores (id, nombre)
+        `)
+        .neq('id', excludeId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (categoriaId) query = query.eq('categoria_id', categoriaId);
+      else if (proveedorId) query = query.eq('proveedor_id', proveedorId);
+      else return [];
+
+      const response = await query;
+
+      if (!response || response.error) {
+        console.warn('Error u omisión de datos en getChollosSimilares:', response?.error);
+        return [];
+      }
+
+      return response.data ?? [];
+    } catch (err) {
+      console.error('Fallo crítico en getChollosSimilares:', err);
+      return [];
+    }
   }
 }

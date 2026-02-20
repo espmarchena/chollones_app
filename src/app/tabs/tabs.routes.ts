@@ -32,23 +32,33 @@ export const routes: Routes = [
           import('../tab5/tab5.page').then((m) => m.Tab5Page),
       },
 
-      // ✅ MAPA (carpeta src/app/mapa)
-{
-  path: 'mapa',
-  loadComponent: () =>
-    import('./mapa/mapa.page').then((m) => m.MapaPage),
-},
-{
-  path: 'categoria/:slug',
-  loadComponent: () =>
-    import('../categoria/categoria.page').then((m) => m.CategoriaPage),
-},
-{
-  path: '',
-  redirectTo: 'tab1',
-  pathMatch: 'full',
-},
+      // MAPA
+      {
+        path: 'mapa',
+        loadComponent: () =>
+          import('./mapa/mapa.page').then((m) => m.MapaPage),
+      },
 
+      // CATEGORIA
+      {
+        path: 'categoria/:slug',
+        loadComponent: () =>
+          import('../categoria/categoria.page').then((m) => m.CategoriaPage),
+      },
+
+      // ✅ PRODUCTO (DETALLE)
+      {
+        path: 'producto/:id',
+        loadComponent: () =>
+          import('../productos/productos.page').then((m) => m.ProductoPage),
+      },
+
+      // DEFAULT TAB
+      {
+        path: '',
+        redirectTo: 'tab1',
+        pathMatch: 'full',
+      },
     ],
   },
 ];

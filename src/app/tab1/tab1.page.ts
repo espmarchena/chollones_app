@@ -140,9 +140,9 @@ export class Tab1Page implements OnInit {
   }
 
   // Navegar a una categoría
-  irACategoria(slug: string) {
-    this.router.navigate(['/tabs/categoria', slug]);
-  }
+irACategoria(slug: string) {
+  this.router.navigate(['/tabs', 'categoria', slug]);
+}
 
   // Métodos para gestión de favoritos
   async toggleFavorito(chollo: any, event?: Event) {
@@ -198,4 +198,27 @@ export class Tab1Page implements OnInit {
     if (!actual || !original || original <= actual) return 0;
     return Math.round(((original - actual) / original) * 100);
   }
+    // ✅ Abrir página de producto (detalle)
+irAProducto(chollo: any) {
+  const id = chollo?.id;
+  if (!id) return;
+
+  this.router.navigate(['/tabs', 'producto', id]);
+}
+
+  // ✅ Botón carrito (placeholder para que no marque error)
+  anadirAlCarrito(item: any) {
+    console.log('Añadir al carrito:', item);
+    // Aquí luego implementas carrito real
+  }
+
+  // ✅ Si quieres descuento también en "productosPopulares"
+calcDescuentoPopular(p: any): number {
+  const actual = Number(p?.precioActual || 0);
+  const original = Number(p?.precioOriginal || 0);
+  if (!actual || !original || original <= actual) return 0;
+  return Math.round(((original - actual) / original) * 100);
+}
+
+
 }

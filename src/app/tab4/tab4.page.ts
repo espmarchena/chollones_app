@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList,
   IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
 } from '@ionic/angular/standalone';
+
 import { addIcons } from 'ionicons';
 import {
   storefrontOutline,
@@ -12,6 +14,7 @@ import {
   locationOutline,
   navigateOutline
 } from 'ionicons/icons';
+
 import { SupabaseService } from '../services/supabase.service';
 import { LocationService } from '../services/location.service';
 
@@ -21,15 +24,18 @@ import { LocationService } from '../services/location.service';
   styleUrls: ['./tab4.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
-    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
+    CommonModule,
+    RouterLink, // ✅ por si usas [routerLink] en el HTML
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonList, IonItem, IonThumbnail, IonLabel, IonBadge,
+    IonSearchbar, IonIcon, IonButton
   ]
 })
 export class Tab4Page implements OnInit {
   listadoChollos: any[] = [];
   filtrados: any[] = [];
-  miLat: number = 0;
-  miLng: number = 0;
+  miLat = 0;
+  miLng = 0;
 
   textoBusqueda = '';
   categoriaSeleccionada = 'todas';
@@ -74,10 +80,7 @@ export class Tab4Page implements OnInit {
         .order('nombre');
 
       if (cats && cats.length > 0) {
-        this.categorias = [
-          { nombre: 'Todas', slug: 'todas' },
-          ...cats
-        ];
+        this.categorias = [{ nombre: 'Todas', slug: 'todas' }, ...cats];
       }
     } catch (err) {
       console.error('Error cargando categorias en tab4', err);
@@ -85,10 +88,9 @@ export class Tab4Page implements OnInit {
 
     await this.cargarChollos();
 
-    // Check query params for active filter
+    // filtros rápidos por query params
     this.route.queryParams.subscribe(params => {
       if (params['filtro']) {
-        // Find if it's a valid quick filter
         const isQuickFilter = this.filtrosRapidos.some(f => f.id === params['filtro']);
         if (isQuickFilter) {
           this.filtroRapidoSeleccionado = params['filtro'];
@@ -101,17 +103,12 @@ export class Tab4Page implements OnInit {
 
   async cargarChollos() {
     try {
-      // 1. LLAMADA LIMPIA: El servicio ya nos devuelve un array seguro (o [])
       const chollos = await this.supabaseService.getChollos();
-
-      // 2. VALIDACIÓN SIMPLE: Solo comprobamos que sea un array
-      // Ya no hace falta buscar .data ni hacer casting raro
       if (chollos && Array.isArray(chollos)) {
 
         this.listadoChollos = chollos.map(c => {
           const pLat = c.proveedores?.lat;
           const pLng = c.proveedores?.lng;
-          // Lógica de distancia
 
           let distancia = '?';
           if (pLat && pLng) {
@@ -130,17 +127,26 @@ export class Tab4Page implements OnInit {
 
         this.filtrados = [...this.listadoChollos];
 
-        // Iniciar vigilancia
         if (this.listadoChollos.length > 0) {
           this.locationService.iniciarVigilancia(this.listadoChollos);
         }
       }
     } catch (error) {
       console.error('Error al cargar chollos:', error);
-      // Gracias al servicio blindado, es raro llegar aquí, pero no rompemos la app
     }
   }
 
+  // ✅ ABRIR DETALLE PRODUCTO
+irAProducto(chollo: any) {
+  const id = chollo?.id;
+  if (!id) {
+    console.warn('Chollo sin id:', chollo);
+    return;
+  }
+
+  // ✅ MUY IMPORTANTE: segmentos separados
+  this.router.navigate(['tabs', 'producto', id]);
+}
   calcDescuento(chollo: any): number {
     const actual = Number(chollo?.precio_actual || 0);
     const original = Number(chollo?.precio_original || 0);
@@ -148,8 +154,9 @@ export class Tab4Page implements OnInit {
     return Math.round(((original - actual) / original) * 100);
   }
 
+  // ✅ COMPATIBLE CON (ionInput)="buscar($event)" DEL SEARCHBAR
   buscar(event: any) {
-    this.textoBusqueda = (event.target.value || '').toLowerCase().trim();
+    this.textoBusqueda = (event?.target?.value || '').toLowerCase().trim();
     this.aplicarFiltros();
   }
 
@@ -159,18 +166,13 @@ export class Tab4Page implements OnInit {
   }
 
   seleccionarFiltroRapido(id: string) {
-    if (this.filtroRapidoSeleccionado === id) {
-      this.filtroRapidoSeleccionado = ''; // Deseleccionar
-    } else {
-      this.filtroRapidoSeleccionado = id;
-    }
+    this.filtroRapidoSeleccionado = (this.filtroRapidoSeleccionado === id) ? '' : id;
     this.aplicarFiltros();
   }
 
   aplicarFiltros() {
     let resultado = [...this.listadoChollos];
 
-    // 1. Filtrar por texto
     if (this.textoBusqueda) {
       resultado = resultado.filter(c =>
         (c.titulo || '').toLowerCase().includes(this.textoBusqueda) ||
@@ -179,21 +181,15 @@ export class Tab4Page implements OnInit {
       );
     }
 
-    // 2. Filtrar por categoría
     if (this.categoriaSeleccionada !== 'todas') {
       resultado = resultado.filter(c =>
         (c.categorias?.slug || '').toLowerCase() === this.categoriaSeleccionada
       );
     }
 
-    // 3. Filtros rápidos
     if (this.filtroRapidoSeleccionado) {
       if (this.filtroRapidoSeleccionado === 'recientes') {
-        resultado.sort((a, b) => {
-          const tA = new Date(a.created_at || 0).getTime();
-          const tB = new Date(b.created_at || 0).getTime();
-          return tB - tA;
-        });
+        resultado.sort((a, b) => (new Date(b.created_at || 0).getTime()) - (new Date(a.created_at || 0).getTime()));
       } else if (this.filtroRapidoSeleccionado === 'destacados') {
         resultado = resultado.filter(c => c.punto?.estado === 'Caliente');
       } else if (this.filtroRapidoSeleccionado === 'descuento') {
@@ -205,9 +201,8 @@ export class Tab4Page implements OnInit {
           return parseFloat(a.distanciaKM) - parseFloat(b.distanciaKM);
         });
       }
-      // 'valorados' can either be sorted by an average rating if exists, otherwise do nothing
     } else {
-      // Orden por cercanía por defecto
+      // por defecto cercanía
       resultado.sort((a, b) => {
         if (a.distanciaKM === '?') return 1;
         if (b.distanciaKM === '?') return -1;
@@ -219,12 +214,11 @@ export class Tab4Page implements OnInit {
   }
 
   abrirNavegacion(chollo: any) {
-    if (!chollo.lat || !chollo.lng) return;
+    if (!chollo?.lat || !chollo?.lng) return;
 
     const lat = chollo.lat;
     const lng = chollo.lng;
 
-    // HE CORREGIDO TUS URLS. La que tenías de googleusercontent no iba a funcionar.
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     const appleMapsUrl = `maps://maps.apple.com/?daddr=${lat},${lng}`;
 
@@ -234,4 +228,9 @@ export class Tab4Page implements OnInit {
       window.open(googleMapsUrl, '_system');
     }
   }
+    anadirAlCarrito(chollo: any) {
+  console.log('Añadir al carrito:', chollo);
+}
+
+
 }
