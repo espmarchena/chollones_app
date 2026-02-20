@@ -53,3 +53,46 @@ h1 {
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
+
+.details-card {
+  background-color: #f8f9fa; /* Fondo gris muy suave para diferenciarlo */
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 25px;
+  border: 1px solid #e0e0e0;
+}
+
+.details-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+
+  ion-icon {
+    font-size: 1.4rem;
+    color: var(--ion-color-primary);
+    margin-right: 8px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.description-long {
+  font-size: 0.95rem;
+  line-height: 1.8; /* Importante: da aire entre líneas para leer mejor */
+  color: #444;
+  
+  /* LA MAGIA: Respeta los saltos de línea y espacios de Supabase */
+  white-space: pre-wrap; 
+  
+  /* Opcional: Justifica el texto para que se vea cuadrado */
+  text-align: justify; 
+}
