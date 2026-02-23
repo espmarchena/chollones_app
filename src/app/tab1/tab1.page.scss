@@ -73,17 +73,19 @@ ion-button {
   padding: 14px;
 }
 
-.section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 6px 0 12px;
+.section-title h3 {
+  color: #111;        // negro principal
+}
 
-  h3 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 900;
-  }
+.section-title h3::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: var(--ion-color-primary);
+  margin-top: 6px;
+  border-radius: 10px;
+}
 
   .link {
     font-size: 13px;
@@ -91,7 +93,14 @@ ion-button {
     font-weight: 700;
     color: #111;
   }
-}
+
+
+  .link {
+    font-size: 13px;
+    text-decoration: underline;
+    font-weight: 700;
+    color: #111;
+  }
 
 /* Quick Links (Circulares) */
 .quick-row {
