@@ -28,7 +28,7 @@ export const routes: Routes = [
       {
         path: 'producto/:id',
         loadComponent: () =>
-          import('./productos/productos.page').then(m => m.ProductoPage),
+          import('./productos/productos.page').then(m => m.ProductosPage),
       },
 
       // Rutas restauradas
