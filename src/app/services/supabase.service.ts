@@ -211,25 +211,32 @@ export class SupabaseService {
 
     try {
       // Verificar si ya existe en el carrito
-      const existe = await this.supabase
+      const { data: existente, error: errorBusqueda } = await this.supabase
         .from('carro')
-        .select('*')
+        .select('id, cantidad')
         .eq('usuario_id', user.id)
         .eq('chollo_id', cholloId)
         .maybeSingle();
 
-      if (existe.data) {
-        // Actualizar cantidad
-        const nuevaCantidad = existe.data.cantidad + cantidad;
-        await this.supabase
+      if (errorBusqueda) {
+        console.error('Error al buscar en carrito:', errorBusqueda);
+        throw errorBusqueda;
+      }
+
+      if (existente) {
+        // Ya existe: solo actualizar cantidad
+        const nuevaCantidad = existente.cantidad + cantidad;
+        const { error: errorUpdate } = await this.supabase
           .from('carro')
           .update({ cantidad: nuevaCantidad })
-          .eq('id', existe.data.id);
+          .eq('id', existente.id);
+        if (errorUpdate) throw errorUpdate;
       } else {
-        // Insertar nuevo
-        await this.supabase
+        // No existe: insertar nuevo
+        const { error: errorInsert } = await this.supabase
           .from('carro')
           .insert({ usuario_id: user.id, chollo_id: cholloId, cantidad });
+        if (errorInsert) throw errorInsert;
       }
     } catch (e) {
       console.error("Error al añadir al carrito", e);
