@@ -89,7 +89,7 @@ export class SupabaseService {
 
     try {
       const response = await this.supabase
-        .from('favoritos')
+        .from('guardados')
         .select(`
           id,
           chollos (
@@ -97,7 +97,7 @@ export class SupabaseService {
             proveedores ( nombre )
           )
         `)
-        .eq('usuario_id', user.id);
+        .eq('usuario_temp_id', user.id);
 
       if (!response || response.error) return [];
       return response.data || [];
@@ -112,9 +112,9 @@ export class SupabaseService {
 
     try {
       const response = await this.supabase
-        .from('favoritos')
+        .from('guardados')
         .select('chollo_id')
-        .eq('usuario_id', user.id);
+        .eq('usuario_temp_id', user.id);
 
       if (!response || response.error) return [];
       const data = response.data || [];
@@ -130,8 +130,8 @@ export class SupabaseService {
 
     try {
       await this.supabase
-        .from('favoritos')
-        .insert({ usuario_id: user.id, chollo_id: cholloId });
+        .from('guardados')
+        .insert({ usuario_temp_id: user.id, chollo_id: cholloId });
     } catch (e) {
       console.error("Error al guardar favorito", e);
     }
@@ -143,9 +143,9 @@ export class SupabaseService {
 
     try {
       await this.supabase
-        .from('favoritos')
+        .from('guardados')
         .delete()
-        .eq('usuario_id', user.id)
+        .eq('usuario_temp_id', user.id)
         .eq('chollo_id', cholloId);
     } catch (e) {
       console.error("Error al eliminar favorito", e);
