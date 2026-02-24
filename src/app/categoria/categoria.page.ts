@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
+import { addIcons } from 'ionicons';
+import { arrowBack } from 'ionicons/icons';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonText, IonButtons, IonBackButton
+  IonContent, NavController, IonButton, IonIcon, IonSpinner
 } from '@ionic/angular/standalone';
-
 import { SupabaseService } from '../services/supabase.service';
 
 @Component({
@@ -14,9 +14,7 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['./categoria.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
-    IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle,
-    IonCardContent, IonText, IonButtons, IonBackButton
+    CommonModule, IonContent, IonButton, IonIcon, IonSpinner
   ],
 })
 export class CategoriaPage implements OnInit {
@@ -27,8 +25,9 @@ export class CategoriaPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private supabase: SupabaseService
-  ) {}
+    private supabase: SupabaseService,
+    private navCtrl: NavController
+  ) {addIcons({ arrowBack });}
 
   async ngOnInit() {
     this.slug = this.route.snapshot.paramMap.get('slug') || '';
@@ -37,7 +36,8 @@ export class CategoriaPage implements OnInit {
 
   get tituloCategoria() {
     if (!this.slug) return 'Categoría';
-    return this.slug.charAt(0).toUpperCase() + this.slug.slice(1);
+    const nombreLimpio = this.slug.replace(/-/g, ' '); //Reemplazamos todos los guiones por espacios
+    return nombreLimpio.charAt(0).toUpperCase() + nombreLimpio.slice(1); //Ponemos la primera letra en mayúscula
   }
 
   async cargarProductos() {
@@ -95,4 +95,7 @@ export class CategoriaPage implements OnInit {
     this.router.navigate(['/tabs/producto', id]);
   }
 
+    volverAtras() {
+    this.navCtrl.back();
+  }
 }
