@@ -26,6 +26,8 @@ import {
   locationOutline
 } from 'ionicons/icons';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
@@ -47,7 +49,7 @@ import {
   ]
 })
 export class TabsPage {
-  constructor() {
+  constructor(public router: Router) {
     addIcons({
       heartOutline,
       personOutline,
@@ -57,5 +59,9 @@ export class TabsPage {
       notificationsOutline,
       locationOutline
     });
+  }
+
+  navegar(ruta: string) {
+    this.router.navigate([ruta]);
   }
 }

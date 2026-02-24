@@ -140,9 +140,9 @@ export class Tab1Page implements OnInit {
   }
 
   // Navegar a una categoría
-irACategoria(slug: string) {
-  this.router.navigate(['/tabs', 'categoria', slug]);
-}
+  irACategoria(slug: string) {
+    this.router.navigate(['/tabs', 'categoria', slug]);
+  }
 
   // Métodos para gestión de favoritos
   async toggleFavorito(chollo: any, event?: Event) {
@@ -198,27 +198,53 @@ irACategoria(slug: string) {
     if (!actual || !original || original <= actual) return 0;
     return Math.round(((original - actual) / original) * 100);
   }
-    // ✅ Abrir página de producto (detalle)
-irAProducto(chollo: any) {
-  const id = chollo?.id;
-  if (!id) return;
+  // ✅ Abrir página de producto (detalle)
+  irAProducto(chollo: any) {
+    const id = chollo?.id;
+    if (!id) return;
 
-  this.router.navigate(['/tabs', 'producto', id]);
-}
+    this.router.navigate(['/tabs', 'producto', id]);
+  }
 
-  // ✅ Botón carrito (placeholder para que no marque error)
-  anadirAlCarrito(item: any) {
-    console.log('Añadir al carrito:', item);
-    // Aquí luego implementas carrito real
+  // ✅ Lógica real del carrito
+  async anadirAlCarrito(item: any) {
+    try {
+      await this.supabaseService.anadirAlCarrito(item.id, 1);
+
+      // Mostrar feedback visual
+      import('@ionic/angular/standalone').then(async ({ ToastController }) => {
+        const toastCtrl = new ToastController();
+        const toast = await toastCtrl.create({
+          message: 'Producto añadido al carrito',
+          duration: 2000,
+          position: 'top',
+          cssClass: 'toast-carrito'
+        });
+        toast.present();
+      });
+
+    } catch (e) {
+      console.error('Error al añadir al carrito', e);
+      import('@ionic/angular/standalone').then(async ({ ToastController }) => {
+        const toastCtrl = new ToastController();
+        const toast = await toastCtrl.create({
+          message: 'Error al añadir. ¿Iniciaste sesión?',
+          duration: 3000,
+          position: 'top',
+          cssClass: 'toast-carrito'
+        });
+        toast.present();
+      });
+    }
   }
 
   // ✅ Si quieres descuento también en "productosPopulares"
-calcDescuentoPopular(p: any): number {
-  const actual = Number(p?.precioActual || 0);
-  const original = Number(p?.precioOriginal || 0);
-  if (!actual || !original || original <= actual) return 0;
-  return Math.round(((original - actual) / original) * 100);
-}
+  calcDescuentoPopular(p: any): number {
+    const actual = Number(p?.precioActual || 0);
+    const original = Number(p?.precioOriginal || 0);
+    if (!actual || !original || original <= actual) return 0;
+    return Math.round(((original - actual) / original) * 100);
+  }
 
 
 }

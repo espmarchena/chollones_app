@@ -16,25 +16,25 @@ export const routes: Routes = [
       // Auth pages moved here to keep tab bar visible
       { path: 'login', loadComponent: () => import('./login/login.page').then(m => m.LoginPage) },
       { path: 'registro', loadComponent: () => import('./registro/registro.page').then(m => m.RegistroPage) },
-      { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },// MAPA
+      { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },
 
       // CATEGORIA
       { path: 'categoria/:slug', loadComponent: () => import('./categoria/categoria.page').then(m => m.CategoriaPage) },
 
-      // ✅ PRODUCTO (DETALLE)
+      // PRODUCTO (DETALLE)
       { path: 'producto/:id', loadComponent: () => import('./productos/productos.page').then(m => m.ProductosPage) },
 
       // Rutas restauradas
       { path: 'editar-perfil', loadComponent: () => import('./editar-perfil/editar-perfil.page').then(m => m.EditarPerfilPage) },
       { path: 'mis-alertas', loadComponent: () => import('./mis-alertas/mis-alertas.page').then(m => m.MisAlertasPage) },
 
+      // CARRITO
+      { path: 'carrito', loadComponent: () => import('./carrito/carrito.page').then(m => m.CarritoPage) },
+
       // default
       { path: '', redirectTo: 'tab1', pathMatch: 'full' },
     ],
   },
-
-  // ✅ OPCIONAL: si alguien navega a /producto/:id, lo mandamos a tabs/producto/:id
-  // { path: 'producto/:id', redirectTo: 'tabs/producto/:id', pathMatch: 'full' },
 
   { path: '', redirectTo: '/tabs/tab1', pathMatch: 'full' },
   { path: '**', redirectTo: '/tabs/tab1' },

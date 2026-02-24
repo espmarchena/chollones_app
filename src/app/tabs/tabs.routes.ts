@@ -47,11 +47,17 @@ export const routes: Routes = [
       },
 
       // ✅ PRODUCTO (DETALLE)
-{
-  path: 'productos',
-  loadComponent: () =>
-    import('../productos/productos.page').then(m => m.ProductosPage),
-},
+      {
+        path: 'productos',
+        loadComponent: () =>
+          import('../productos/productos.page').then(m => m.ProductosPage),
+      },
+      // ✅ CARRITO
+      {
+        path: 'carrito',
+        loadComponent: () =>
+          import('../carrito/carrito.page').then((m) => m.CarritoPage),
+      },
 
       // DEFAULT TAB
       {

@@ -97,23 +97,27 @@ ion-tab-bar {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
+
 @import "leaflet/dist/leaflet.css";
+
 //Un pequeño fix para que el contenedor del mapa ocupe toda la pantalla
 #map {
   height: 100%;
   width: 100%;
-  z-index: 1; /* Bajo, para que no tape menús */
+  z-index: 1;
+  /* Bajo, para que no tape menús */
 }
 
 
 //ANIMACION CHOLOLO
 .contenedor-mascota {
   position: fixed;
-  bottom: 85px; 
+  bottom: 85px;
   right: -80px; // Empezamos con el mono escondido a la derecha
   z-index: 9999;
   width: 100px !important;
-  pointer-events: none !important; /* Esto obliga a que el contenedor del mono no bloquee los clics al mapa */
+  pointer-events: none !important;
+  /* Esto obliga a que el contenedor del mono no bloquee los clics al mapa */
   display: flex;
   justify-content: flex-end;
 
@@ -126,25 +130,57 @@ ion-tab-bar {
 }
 
 @keyframes cicloMascota {
+
   // 0% a 70%: El mono está totalmente escondido
-  0%, 70% { transform: translateX(0) rotate(0); }
-  
+  0%,
+  70% {
+    transform: translateX(0) rotate(0);
+  }
+
   // 72%: Se asoma un poquito (curiosidad)
-  72% { transform: translateX(-40px) rotate(-10deg); }
-  
+  72% {
+    transform: translateX(-40px) rotate(-10deg);
+  }
+
   // 77%: Se vuelve a esconder un poco
-  77% { transform: translateX(-40px) rotate(-10deg); }
-  
+  77% {
+    transform: translateX(-40px) rotate(-10deg);
+  }
+
   // 80%: Sale del todo para saludar
-  80% { transform: translateX(-90px) rotate(-5deg); }
-  
+  80% {
+    transform: translateX(-90px) rotate(-5deg);
+  }
+
   // 82%, 86%: Movimiento de saludo (arriba y abajo)
-  82%, 86% { transform: translateX(-90px) rotate(10deg); }
-  84%, 88% { transform: translateX(-90px) rotate(-10deg); }
-  
+  82%,
+  86% {
+    transform: translateX(-90px) rotate(10deg);
+  }
+
+  84%,
+  88% {
+    transform: translateX(-90px) rotate(-10deg);
+  }
+
   // 92%: Se queda mirando un momento
-  92% { transform: translateX(-90px) rotate(0) scale(1.1); }
-  
+  92% {
+    transform: translateX(-90px) rotate(0) scale(1.1);
+  }
+
   // 100%: Se retira rápidamente
-  100% { transform: translateX(0) rotate(0); }
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+}
+
+/* Toast del carrito: estilo outline verde */
+.toast-carrito {
+  --background: #ffffff;
+  --color: #40c9a2;
+  --border-color: #40c9a2;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --border-radius: 24px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

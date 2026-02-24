@@ -137,7 +137,7 @@ export class SupabaseService {
     }
   }
 
-async eliminarCholloFavorito(cholloId: string) {
+  async eliminarCholloFavorito(cholloId: string) {
     const user = this.userValue;
     if (!user) return;
 
@@ -151,7 +151,7 @@ async eliminarCholloFavorito(cholloId: string) {
 
       // Si hay error (como falta de permisos), lanzamos la alerta
       if (error) throw error;
-      
+
       console.log('✅ Chollo desmarcado correctamente de la BD');
     } catch (e) {
       console.error("❌ Error al eliminar favorito de Supabase:", e);
@@ -171,6 +171,106 @@ async eliminarCholloFavorito(cholloId: string) {
       return response.data || [];
     } catch (e) {
       return [];
+    }
+  }
+
+  // --- CARRITO DE COMPRAS ---
+
+  async getCarrito() {
+    const user = this.userValue;
+    if (!user) return [];
+
+    try {
+      const response = await this.supabase
+        .from('carro')
+        .select(`
+          id,
+          cantidad,
+          chollos (
+            id, titulo, precio_actual, precio_original, imagen_url,
+            proveedores ( nombre )
+          )
+        `)
+        .eq('usuario_id', user.id)
+        .order('creado_en', { ascending: false });
+
+      if (!response || response.error) {
+        console.warn('Error al cargar carrito:', response?.error);
+        return [];
+      }
+      return response.data || [];
+    } catch (error) {
+      console.error('Excepción al cargar carrito:', error);
+      return [];
+    }
+  }
+
+  async anadirAlCarrito(cholloId: string, cantidad: number = 1) {
+    const user = this.userValue;
+    if (!user) throw new Error('Debes estar logueado para añadir al carrito');
+
+    try {
+      // Verificar si ya existe en el carrito
+      const existe = await this.supabase
+        .from('carro')
+        .select('*')
+        .eq('usuario_id', user.id)
+        .eq('chollo_id', cholloId)
+        .maybeSingle();
+
+      if (existe.data) {
+        // Actualizar cantidad
+        const nuevaCantidad = existe.data.cantidad + cantidad;
+        await this.supabase
+          .from('carro')
+          .update({ cantidad: nuevaCantidad })
+          .eq('id', existe.data.id);
+      } else {
+        // Insertar nuevo
+        await this.supabase
+          .from('carro')
+          .insert({ usuario_id: user.id, chollo_id: cholloId, cantidad });
+      }
+    } catch (e) {
+      console.error("Error al añadir al carrito", e);
+      throw e;
+    }
+  }
+
+  async actualizarCantidadCarrito(carroId: string, cantidad: number) {
+    const user = this.userValue;
+    if (!user) throw new Error('Debes estar logueado');
+
+    try {
+      if (cantidad <= 0) {
+        await this.eliminarDelCarrito(carroId);
+      } else {
+        await this.supabase
+          .from('carro')
+          .update({ cantidad })
+          .eq('id', carroId)
+          .eq('usuario_id', user.id); // Seguridad
+      }
+    } catch (e) {
+      console.error("Error al actualizar cantidad", e);
+      throw e;
+    }
+  }
+
+  async eliminarDelCarrito(carroId: string) {
+    const user = this.userValue;
+    if (!user) throw new Error('Debes estar logueado');
+
+    try {
+      const { error } = await this.supabase
+        .from('carro')
+        .delete()
+        .eq('id', carroId)
+        .eq('usuario_id', user.id);
+      if (error) throw error;
+    } catch (e) {
+      console.error("Error al eliminar del carrito", e);
+      throw e;
     }
   }
 
@@ -226,9 +326,9 @@ async eliminarCholloFavorito(cholloId: string) {
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-    
+
   }
-    // --- DETALLE DE CHOLLO (PÁGINA PRODUCTO) ---
+  // --- DETALLE DE CHOLLO (PÁGINA PRODUCTO) ---
 
   async getCholloById(id: string): Promise<any | null> {
     try {

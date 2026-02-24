@@ -241,4 +241,34 @@ export class Tab4Page implements OnInit {
     this.router.navigate(['/tabs/producto', id]);
   }
 
+  async anadirAlCarrito(chollo: any, event?: Event) {
+    if (event) event.stopPropagation();
+    try {
+      await this.supabaseService.anadirAlCarrito(chollo.id, 1);
+
+      import('@ionic/angular/standalone').then(async ({ ToastController }) => {
+        const toastCtrl = new ToastController();
+        const toast = await toastCtrl.create({
+          message: 'Producto añadido al carrito',
+          duration: 2000,
+          position: 'top',
+          cssClass: 'toast-carrito'
+        });
+        toast.present();
+      });
+    } catch (e) {
+      console.error('Error al añadir al carrito', e);
+      import('@ionic/angular/standalone').then(async ({ ToastController }) => {
+        const toastCtrl = new ToastController();
+        const toast = await toastCtrl.create({
+          message: 'Error al añadir. ¿Iniciaste sesión?',
+          duration: 3000,
+          position: 'top',
+          cssClass: 'toast-carrito'
+        });
+        toast.present();
+      });
+    }
+  }
+
 }
