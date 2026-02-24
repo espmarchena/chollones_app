@@ -63,7 +63,10 @@ async obtenerChollos() {
 
 pintarMarcadores() {
   this.chollos.forEach(chollo => {
-    if (chollo.lat && chollo.lng) {
+    // Sacamos lat y lng del proveedo
+    const latitud = chollo.proveedores?.lat;
+    const longitud = chollo.proveedores?.lng;
+    if (latitud && longitud) {
       
       // 1. Extraemos el nombre del proveedor de forma segura
       // (Supabase lo devuelve dentro de un objeto 'proveedores')
@@ -73,7 +76,7 @@ pintarMarcadores() {
       const precio = chollo.precio_actual || chollo.precio || 0;
 
       // 3. Añadimos el proveedor al HTML del popup
-      L.marker([chollo.lat, chollo.lng])
+      L.marker([latitud, longitud])
         .addTo(this.map)
         .bindPopup(`
           <div style="text-align: center;">
