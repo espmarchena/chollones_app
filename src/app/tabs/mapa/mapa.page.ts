@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import * as L from 'leaflet';
 import { LocationService } from '../../services/location.service';
-import { SupabaseService } from '../../services/supabase.service'; // Importa tu servicio
+import { SupabaseService } from '../../services/supabase.service'; // Importamos el servicio de la bbdd
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mapa',
@@ -18,7 +19,8 @@ export class MapaPage implements OnInit {
 
   constructor(
     private location: LocationService,
-    private supabase: SupabaseService // Inyectamos Supabase
+    private supabase: SupabaseService, // Inyectamos Supabase
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -37,76 +39,87 @@ export class MapaPage implements OnInit {
     await this.obtenerChollos();
   }
 
-async obtenerChollos() {
-  try {
-    // 1. Obtenemos la respuesta completa sin desestructurar {}
-    const respuesta = await this.supabase.getChollos(); 
-    
-    // 2. Si la respuesta es nula o indefinida, abortamos
-    if (!respuesta) {
-      console.warn('No se recibió respuesta de Supabase en el mapa');
-      return;
-    }
+  async obtenerChollos() {
+    try {
+      // 1. Obtenemos la respuesta completa sin desestructurar {}
+      const respuesta = await this.supabase.getChollos(); 
+      
+      // 2. Si la respuesta es nula o indefinida, abortamos
+      if (!respuesta) {
+        console.warn('No se recibió respuesta de Supabase en el mapa');
+        return;
+      }
 
-    // 3. Extraemos los datos de forma segura
-    // Esto evita el error "Cannot destructure property data"
-    const data = (respuesta as any).data || (Array.isArray(respuesta) ? respuesta : null);
-    
-    if (data && Array.isArray(data)) {
-      this.chollos = data;
-      this.pintarMarcadores();
+      // 3. Extraemos los datos de forma segura
+      // Esto evita el error "Cannot destructure property data"
+      const data = (respuesta as any).data || (Array.isArray(respuesta) ? respuesta : null);
+      
+      if (data && Array.isArray(data)) {
+        this.chollos = data;
+        this.pintarMarcadores();
+      }
+    } catch (e) {
+      console.error("Error final en mapa:", e);
     }
-  } catch (e) {
-    console.error("Error final en mapa:", e);
   }
-}
 
-pintarMarcadores() {
-  this.chollos.forEach(chollo => {
-    // Sacamos lat y lng del proveedo
-    const latitud = chollo.proveedores?.lat;
-    const longitud = chollo.proveedores?.lng;
-    if (latitud && longitud) {
+  pintarMarcadores() {
+    this.chollos.forEach(chollo => {
+      // Sacamos lat y lng del proveedor
+      const latitud = chollo.proveedores?.lat;
+      const longitud = chollo.proveedores?.lng;
       
-      // 1. Extraemos el nombre del proveedor de forma segura
-      // (Supabase lo devuelve dentro de un objeto 'proveedores')
-      const nombreProveedor = chollo.proveedores?.nombre || 'Proveedor desconocido';
+      if (latitud && longitud) {
+        // 1. Extraemos datos
+        const nombreProveedor = chollo.proveedores?.nombre || 'Proveedor desconocido';
+        const precio = chollo.precio_actual || chollo.precio || 0;
+
+        // 2. Creamos el contenedor del popup como un elemento HTML real
+        const popupContent = document.createElement('div');
+        popupContent.style.textAlign = 'center';
+
+        // 3. Le metemos el diseño y el botón
+        popupContent.innerHTML = `
+          <b style="font-size: 14px; display: block; margin-bottom: 4px;">${chollo.titulo}</b>
+          <span style="color: #666; font-size: 12px;">${nombreProveedor}</span><br>
+          <b style="color: var(--ion-color-secondary); font-size: 15px; display: block; margin: 8px 0;">${precio}€</b>
+          <button class="btn-detalle" style="background: var(--ion-color-primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            Ver Oferta
+          </button>
+        `;
+
+        // 4. "Cazamos" el clic del botón y le decimos que navegue al detalle
+        const btn = popupContent.querySelector('.btn-detalle');
+        btn?.addEventListener('click', () => {
+          this.irADetalle(chollo.id);
+        });
+
+        // 5. Se lo pasamos a Leaflet (¡Una sola vez!)
+        L.marker([latitud, longitud])
+          .addTo(this.map)
+          .bindPopup(popupContent);
+      }
+    });
+  }
+
+  private initMap(lat: number, lng: number) {
+    const mapOptions: any = {
+      tap: false,
+      wheelDebounceTime: 150
+    };
+
+    this.map = L.map('map', mapOptions).setView([lat, lng], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(this.map);
       
-      // 2. Usamos el precio correcto (asegúrate si es precio o precio_actual en tu base de datos)
-      const precio = chollo.precio_actual || chollo.precio || 0;
+      L.marker([lat, lng]).addTo(this.map).bindPopup('Tú estás aquí').openPopup();
 
-      // 3. Añadimos el proveedor al HTML del popup
-      L.marker([latitud, longitud])
-        .addTo(this.map)
-        .bindPopup(`
-          <div style="text-align: center;">
-            <b style="font-size: 14px;">${chollo.titulo}</b><br>
-            <span style="color: #666; font-size: 12px;">${nombreProveedor}</span><br>
-            <b style="color: var(--ion-color-secondary); font-size: 14px;">${precio}€</b>
-          </div>
-        `);
-    }
-  });
-}
-
-private initMap(lat: number, lng: number) {
-  const mapOptions: any = {
-    tap: false,
-    wheelDebounceTime: 150
-  };
-
-  this.map = L.map('map', mapOptions).setView([lat, lng], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
-    }).addTo(this.map);
-    
-    L.marker([lat, lng]).addTo(this.map).bindPopup('Tú estás aquí').openPopup();
-
-    // Forzamos un re-cálculo del tamaño para que no se vea el mapa gris o bloqueado
-    setTimeout(() => {
-      this.map.invalidateSize();
-    }, 500);
+      // Forzamos un re-cálculo del tamaño para que no se vea el mapa gris o bloqueado
+      setTimeout(() => {
+        this.map.invalidateSize();
+      }, 500);
   }
 
   private configurarIconos() {
@@ -119,5 +132,10 @@ private initMap(lat: number, lng: number) {
       iconAnchor: [12, 41]
     });
     L.Marker.prototype.options.icon = iconDefault;
+  }
+
+  irADetalle(id: string) {
+    console.log('Navegando al chollo desde el mapa:', id);
+    this.router.navigate(['/tabs/producto', id]);
   }
 }
