@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
@@ -15,9 +15,7 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['tab2.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    RouterLink,
-    IonHeader, IonToolbar, IonTitle, IonContent,
+    CommonModule, RouterLink, IonHeader, IonToolbar, IonTitle, IonContent,
     IonGrid, IonRow, IonCol, IonCard, IonText
   ],
 })
@@ -25,7 +23,10 @@ export class Tab2Page implements OnInit {
   categorias: any[] = [];
   loading = true;
 
-  constructor(private supabase: SupabaseService) {}
+  constructor(
+    private supabase: SupabaseService,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     await this.cargarCategorias();
@@ -59,4 +60,10 @@ export class Tab2Page implements OnInit {
       this.loading = false;
     }
   }
+
+  irACategoria(slug: string) {
+    console.log('Navegando a la categoría:', slug);
+    this.router.navigate(['/tabs/categoria', slug]);
+  }
+
 }

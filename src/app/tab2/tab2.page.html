@@ -8,18 +8,12 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6" *ngFor="let cat of categorias">
-<ion-card
-  class="category-card"
-  [style.background-color]="cat.color"
-  [routerLink]="['/tabs', 'categoria', cat.slug]"
-  button
->
-
+        <ion-card class="category-card" [style.background-color]="cat.color" [routerLink]="['/tabs', 'categoria', cat.slug]" button>
           <div class="category-content">
             <img [src]="cat.img" [alt]="cat.nombre" />
-            <ion-text>
-              <h2>{{ cat.nombre }}</h2>
-            </ion-text>
+              <ion-text>
+                <h2>{{ cat.nombre }}</h2>
+              </ion-text>
           </div>
         </ion-card>
       </ion-col>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonList,
-  IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
+  IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -22,7 +22,7 @@ import { LocationService } from '../services/location.service';
   standalone: true,
   imports: [
     CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
-    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonSearchbar, IonIcon, IonButton
+    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton
   ]
 })
 export class Tab4Page implements OnInit {

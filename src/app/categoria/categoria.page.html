@@ -1,5 +1,8 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
     <ion-title>{{ tituloCategoria }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,7 +15,7 @@
     No hay productos en esta categoría todavía.
   </ion-text>
 
- <ion-card *ngFor="let p of productos">
+ <ion-card *ngFor="let p of productos" (click)="irADetalle(p.id)" button>
   <img [src]="p.imagen_url" *ngIf="p.imagen_url" />
 
   <ion-card-header>

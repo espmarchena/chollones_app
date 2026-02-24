@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent,
-  IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle,
-  IonCardContent, IonText
+  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonText, IonButtons, IonBackButton
 } from '@ionic/angular/standalone';
 
 import { SupabaseService } from '../services/supabase.service';
@@ -18,7 +16,7 @@ import { SupabaseService } from '../services/supabase.service';
   imports: [
     CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
     IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle,
-    IonCardContent, IonText
+    IonCardContent, IonText, IonButtons, IonBackButton
   ],
 })
 export class CategoriaPage implements OnInit {
@@ -28,6 +26,7 @@ export class CategoriaPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private supabase: SupabaseService
   ) {}
 
@@ -90,4 +89,10 @@ export class CategoriaPage implements OnInit {
       this.loading = false;
     }
   }
+
+  irADetalle(id: string) {
+    console.log('Navegando al detalle desde categoría:', id);
+    this.router.navigate(['/tabs/producto', id]);
+  }
+
 }

@@ -4,8 +4,7 @@ import { authGuard } from './guards/auth-guard';
 export const routes: Routes = [
   {
     path: 'tabs',
-    loadComponent: () =>
-      import('./tabs/tabs.page').then(m => m.TabsPage),
+    loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage),
     // canActivate: [authGuard],
     children: [
       { path: 'tab1', loadComponent: () => import('./tab1/tab1.page').then(m => m.Tab1Page) },
@@ -17,24 +16,17 @@ export const routes: Routes = [
       // Auth pages moved here to keep tab bar visible
       { path: 'login', loadComponent: () => import('./login/login.page').then(m => m.LoginPage) },
       { path: 'registro', loadComponent: () => import('./registro/registro.page').then(m => m.RegistroPage) },
-
-      // MAPA
-      { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },
+      { path: 'mapa', loadComponent: () => import('./tabs/mapa/mapa.page').then(m => m.MapaPage) },// MAPA
 
       // CATEGORIA
       { path: 'categoria/:slug', loadComponent: () => import('./categoria/categoria.page').then(m => m.CategoriaPage) },
 
-      // ✅ PRODUCTO (DETALLE)  <-- AÑADIDO
-      {
-        path: 'producto/:id',
-        loadComponent: () =>
-          import('./productos/productos.page').then(m => m.ProductosPage),
-      },
+      // ✅ PRODUCTO (DETALLE)
+      { path: 'producto/:id', loadComponent: () => import('./productos/productos.page').then(m => m.ProductosPage) },
 
       // Rutas restauradas
       { path: 'editar-perfil', loadComponent: () => import('./editar-perfil/editar-perfil.page').then(m => m.EditarPerfilPage) },
       { path: 'mis-alertas', loadComponent: () => import('./mis-alertas/mis-alertas.page').then(m => m.MisAlertasPage) },
-      { path: 'producto/:id', loadComponent: () => import('./productos/productos.page').then(m => m.ProductosPage) },
 
       // default
       { path: '', redirectTo: 'tab1', pathMatch: 'full' },
@@ -42,7 +34,7 @@ export const routes: Routes = [
   },
 
   // ✅ OPCIONAL: si alguien navega a /producto/:id, lo mandamos a tabs/producto/:id
-  { path: 'producto/:id', redirectTo: 'tabs/producto/:id', pathMatch: 'full' },
+  // { path: 'producto/:id', redirectTo: 'tabs/producto/:id', pathMatch: 'full' },
 
   { path: '', redirectTo: '/tabs/tab1', pathMatch: 'full' },
   { path: '**', redirectTo: '/tabs/tab1' },
