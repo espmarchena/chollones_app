@@ -137,18 +137,25 @@ export class SupabaseService {
     }
   }
 
-  async eliminarCholloFavorito(cholloId: string) {
+async eliminarCholloFavorito(cholloId: string) {
     const user = this.userValue;
     if (!user) return;
 
     try {
-      await this.supabase
+      // Le pedimos a Supabase que borre y nos diga si ha habido error
+      const { error } = await this.supabase
         .from('guardados')
         .delete()
         .eq('usuario_temp_id', user.id)
         .eq('chollo_id', cholloId);
+
+      // Si hay error (como falta de permisos), lanzamos la alerta
+      if (error) throw error;
+      
+      console.log('✅ Chollo desmarcado correctamente de la BD');
     } catch (e) {
-      console.error("Error al eliminar favorito", e);
+      console.error("❌ Error al eliminar favorito de Supabase:", e);
+      throw e; // Importantísimo para que el Tab1 deshaga el cambio visual
     }
   }
 
