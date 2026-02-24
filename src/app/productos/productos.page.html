@@ -1,28 +1,27 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab4"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Detalle del Chollo</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content *ngIf="producto" [fullscreen]="true">
 
-<ion-content *ngIf="producto">
+  <div class="back-button-float">
+    <ion-button (click)="volverAtras()" fill="clear">
+      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+    </ion-button>
+  </div>
+
   <div class="header-image" [style.background-image]="'url(' + producto.imagen_url + ')'">
     <div class="discount-badge" *ngIf="producto.precio_original">
       {{ (((producto.precio_original - producto.precio_actual) / producto.precio_original) * 100).toFixed(0) }}% DTO
     </div>
   </div>
 
-  <div class="ion-padding">
-    <h1>{{ producto.titulo }}</h1>
+  <div class="ion-padding content-container">
+    <h1 class="product-title">{{ producto.titulo }}</h1>
     
     <ion-item lines="none" class="vendor-info">
       <ion-avatar slot="start">
         <img [src]="producto.proveedores?.logo || 'assets/placeholder.png'" />
       </ion-avatar>
       <ion-label>
-        <h3>Tienda: {{ producto.proveedores?.nombre }}</h3>
+        <p>Vendido por</p>
+        <h3>{{ producto.proveedores?.nombre }}</h3>
       </ion-label>
     </ion-item>
 
@@ -32,13 +31,12 @@
     </div>
 
     <div class="long-description-container" *ngIf="producto?.descripcion_larga">
-      <h3>Detalles de la oferta</h3>
+      <h3 class="section-title">Detalles de la oferta</h3>
       <p class="description-long">{{ producto.descripcion_larga }}</p>
     </div>
 
-    <ion-button expand="block" color="primary" class="ion-margin-top">
+    <ion-button expand="block" color="primary" class="ion-margin-top btn-action">
       CANJEAR CUPÓN
     </ion-button>
-
   </div>
 </ion-content>

@@ -79,17 +79,17 @@ export class MapaPage implements OnInit {
         popupContent.style.textAlign = 'center';
 
         // 3. Le metemos el diseño y el botón
-        popupContent.innerHTML = `
-          <b style="font-size: 14px; display: block; margin-bottom: 4px;">${chollo.titulo}</b>
-          <span style="color: #666; font-size: 12px;">${nombreProveedor}</span><br>
-          <b style="color: var(--ion-color-secondary); font-size: 15px; display: block; margin: 8px 0;">${precio}€</b>
-          <button class="btn-detalle" style="background: var(--ion-color-primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-            Ver Oferta
-          </button>
-        `;
+      popupContent.innerHTML = `
+        <div class="map-popup-container">
+          <b class="popup-title">${chollo.titulo}</b>
+          <span class="popup-vendor">${nombreProveedor}</span>
+          <b class="popup-price">${precio}€</b>
+          <button class="popup-btn">Ver Oferta</button>
+        </div>
+      `;
 
         // 4. "Cazamos" el clic del botón y le decimos que navegue al detalle
-        const btn = popupContent.querySelector('.btn-detalle');
+        const btn = popupContent.querySelector('.popup-btn');
         btn?.addEventListener('click', () => {
           this.irADetalle(chollo.id);
         });

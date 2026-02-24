@@ -3,6 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
+import { arrowBack } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-productos',
@@ -16,8 +19,9 @@ export class ProductosPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private supabase: SupabaseService
-  ) {}
+    private supabase: SupabaseService,
+    private navCtrl: NavController
+  ) {addIcons({ arrowBack });}
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -30,5 +34,9 @@ export class ProductosPage implements OnInit {
       
       this.producto = data;
     }
+  }
+
+  volverAtras() {
+    this.navCtrl.back();
   }
 }
