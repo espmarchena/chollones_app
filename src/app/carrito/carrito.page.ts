@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
-  IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem,
-  IonThumbnail, IonLabel, IonButton, IonIcon, IonFooter, IonSpinner, IonButtons, IonBackButton
+  IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon, IonFooter, IonSpinner, IonButtons, IonBackButton
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addOutline, removeOutline, trashOutline, bagCheckOutline, bagOutline } from 'ionicons/icons';
@@ -17,8 +16,7 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['./carrito.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, FormsModule, IonContent, IonHeader, IonTitle, IonToolbar,
-    IonList, IonItem, IonThumbnail, IonLabel, IonButton, IonIcon, IonFooter,
+    CommonModule, FormsModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon, IonFooter,
     IonSpinner, IonButtons, IonBackButton
   ]
 })
