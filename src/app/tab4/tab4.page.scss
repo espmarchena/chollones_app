@@ -86,16 +86,21 @@ ion-list {
   border-bottom: 1px solid #f2f2f2;
 
   ion-thumbnail {
-    width: 85px; // Reducido de 110px
-    height: 85px; // Reducido de 110px
-    margin: 8px; // Reducido de 12px
+    width: 85px;
+    height: 85px; 
+    margin: 8px; 
     border-radius: 6px;
-    overflow: hidden;
+    overflow: visible;
+    position: hidden; 
 
     img {
       object-fit: cover;
+      width: 100%;
+      height: 100%;
+      border-radius: 6px; 
     }
   }
+
 
   ion-label {
     margin: 8px 10px 8px 0; // Márgenes más pequeños
@@ -212,18 +217,49 @@ ion-searchbar {
   }
 }
 
+/* Contenedor de botones de acción */
 .action-buttons-container {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
+  align-items: center; // Alinea el círculo del corazón con los botones
   gap: 8px;
 
   ion-button {
     --border-radius: 6px;
     font-size: 0.75rem;
-    height: 30px;
+    height: 32px;
     margin: 0;
     text-transform: none;
-    --padding-start: 10px;
-    --padding-end: 10px;
+  }
+
+  /* ESTILO PARA EL CORAZÓN EN LA LISTA  */
+.fav-icon {
+    width: 30px;   // Misma altura que los botones de Ionic
+    height: 30px;
+    min-width: 30px;
+    background: var(--ion-color-primary) !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+
+    ion-icon {
+      font-size: 18px;
+      color: white;
+    }
+
+    &.active {
+      ion-icon {
+        color: var(--ion-color-primary) !important; // Rojo cuando es favorito
+      }
+    }
+
+    &:active {
+      transform: scale(0.9); // Efecto de pulsación
+    }
   }
 }

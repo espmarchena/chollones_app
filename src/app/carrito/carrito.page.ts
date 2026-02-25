@@ -16,8 +16,7 @@ import { SupabaseService } from '../services/supabase.service';
   styleUrls: ['./carrito.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, FormsModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon, IonFooter,
-    IonSpinner, IonButtons, IonBackButton
+    CommonModule, FormsModule, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonIcon, IonFooter, IonSpinner, IonButtons, IonBackButton
   ]
 })
 export class CarritoPage implements OnInit {

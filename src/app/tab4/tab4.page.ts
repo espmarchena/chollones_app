@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonList,
-  IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton
+  IonList, IonContent,
+  IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton, IonTitle, IonToolbar, IonHeader
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   storefrontOutline,
   informationCircleOutline,
   locationOutline,
-  navigateOutline
+  navigateOutline,
+  heart, heartOutline
 } from 'ionicons/icons';
 import { SupabaseService } from '../services/supabase.service';
 import { LocationService } from '../services/location.service';
@@ -21,8 +22,8 @@ import { LocationService } from '../services/location.service';
   styleUrls: ['./tab4.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, IonHeader, IonToolbar, IonTitle, IonContent,
-    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton
+    CommonModule,
+    IonList, IonItem, IonThumbnail, IonLabel, IonBadge, IonIcon, IonButton, IonContent, IonTitle, IonToolbar, IonHeader
   ]
 })
 export class Tab4Page implements OnInit {
@@ -31,6 +32,9 @@ export class Tab4Page implements OnInit {
   filtrados: any[] = [];
   miLat: number = 0;
   miLng: number = 0;
+
+  //Estado para favoritos (mg)
+  favoritosIds: Set<string> = new Set();
 
   textoBusqueda = '';
   categoriaSeleccionada = 'todas';
@@ -54,7 +58,7 @@ export class Tab4Page implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline });
+    addIcons({ storefrontOutline, informationCircleOutline, locationOutline, navigateOutline, heart, heartOutline });
   }
 
   async ngOnInit() {
@@ -84,6 +88,8 @@ export class Tab4Page implements OnInit {
       console.error('Error cargando categorias en tab4', err);
     }
 
+    // Cargamos favoritos y chollos al iniciar
+    await this.cargarFavoritos();
     await this.cargarChollos();
 
     // Check query params for active filter
@@ -140,6 +146,61 @@ export class Tab4Page implements OnInit {
       console.error('Error al cargar chollos:', error);
       // Gracias al servicio blindado, es raro llegar aquí, pero no rompemos la app
     }
+  }
+
+  // Nueva función: Cargar favoritos del usuario
+  async cargarFavoritos() {
+    try {
+      const { data: { user } } = await this.supabaseService.client.auth.getUser();
+      if (!user) return;
+
+      const { data } = await this.supabaseService.client
+        .from('guardados')
+        .select('chollo_id')
+        .eq('usuario_temp_id', user.id);
+
+      if (data) {
+        this.favoritosIds = new Set(data.map(f => f.chollo_id));
+      }
+    } catch (error) {
+      console.error('Error cargando favoritos:', error);
+    }
+  }
+
+  // Nueva función: Toggle de favorito (Igual que en Tab1)
+  async toggleFavorito(chollo: any, event: Event) {
+    event.stopPropagation(); // Evita navegar al detalle
+    
+    const { data: { user } } = await this.supabaseService.client.auth.getUser();
+    if (!user) {
+      alert('Debes iniciar sesión para guardar favoritos');
+      return;
+    }
+
+    const isFav = this.favoritosIds.has(chollo.id);
+
+    try {
+      if (isFav) {
+        await this.supabaseService.client
+          .from('guardados')
+          .delete()
+          .eq('chollo_id', chollo.id)
+          .eq('usuario_temp_id', user.id);
+        this.favoritosIds.delete(chollo.id);
+      } else {
+        await this.supabaseService.client
+          .from('guardados')
+          .insert({ chollo_id: chollo.id, usuario_temp_id: user.id });
+        this.favoritosIds.add(chollo.id);
+      }
+    } catch (error) {
+      console.error('Error al actualizar favorito:', error);
+    }
+  }
+
+  // Nueva función: Comprobar si es favorito
+  esFavorito(id: string): boolean {
+    return this.favoritosIds.has(id);
   }
 
   calcDescuento(chollo: any): number {

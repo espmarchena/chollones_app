@@ -6,7 +6,6 @@
 
 <ion-content fullscreen>
   <div class="filters-container">
-    <!-- Categorías -->
     <div class="categories-scroll">
       <div class="category-pill" *ngFor="let cat of categorias" [class.active]="categoriaSeleccionada === cat.slug"
         (click)="seleccionarCategoria(cat.slug)">
@@ -14,7 +13,6 @@
       </div>
     </div>
 
-    <!-- Filtros Rápidos (Cuadraditos) -->
     <div class="quick-filters-scroll">
       <div class="quick-filter-chip" *ngFor="let f of filtrosRapidos" [class.active]="filtroRapidoSeleccionado === f.id"
         (click)="seleccionarFiltroRapido(f.id)">
@@ -26,7 +24,7 @@
   <ion-list lines="full">
     <ion-item *ngFor="let chollo of filtrados" (click)="irADetalle(chollo.id)" class="chollo-item">
 
-      <ion-thumbnail slot="start">
+      <ion-thumbnail slot="start" class="thumbnail-container">
         <img [src]="chollo.imagen_url || 'assets/placeholder.png'" />
       </ion-thumbnail>
 
@@ -69,6 +67,11 @@
           <ion-button size="small" color="secondary" (click)="anadirAlCarrito(chollo, $event)">
             Añadir al carrito
           </ion-button>
+
+          <div class="fav-icon" [class.active]="esFavorito(chollo.id)" (click)="toggleFavorito(chollo, $event); $event.stopPropagation()">
+            <ion-icon name="heart"></ion-icon>
+          </div>
+
         </div>
       </ion-label>
 

@@ -174,13 +174,47 @@ ion-tab-bar {
   }
 }
 
-/* Toast del carrito: estilo outline verde */
+
+/* Toast del carrito: Burbuja pequeña y elegante */
 .toast-carrito {
-  --background: #ffffff;
-  --color: #40c9a2;
-  --border-color: #40c9a2;
-  --border-width: 1.5px;
-  --border-style: solid;
-  --border-radius: 24px;
-  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  // 1. Elevamos el aviso para que no lo tape nada
+  --z-index: 99999 !important;
+
+  // 2. Posicionamiento: lo bajamos para no tapar los iconos superiores
+  // Ajustamos el '90px' si necesitamos que baje más o menos
+  margin-top: calc(var(--ion-safe-area-top, 0px) + 90px) !important;
+}
+
+/* 1. Hacemos que el fondo negro sea totalmente transparente */
+.toast-carrito {
+  --background: transparent !important; 
+  --box-shadow: none !important;
+  
+  /* Bajamos el aviso para que no tape los iconos rojos */
+  margin-top: calc(var(--ion-safe-area-top, 0px) + 90px) !important;
+}
+
+/* 2. Estilizamos solo la cápsula blanca central */
+.toast-carrito::part(container) {
+  background: #ffffff !important;
+  border: 1.5px solid #40c9a2 !important;
+  border-radius: 30px !important;
+  
+  /* Forzamos que la cápsula sea pequeña y centrada */
+  width: fit-content !important;
+  min-width: 150px !important;
+  max-width: 80% !important;
+  margin: 0 auto !important;
+  
+  /* Sombra para que flote sobre el contenido */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px 16px !important;
+}
+
+/* 3. El texto */
+.toast-carrito::part(message) {
+  color: #40c9a2 !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
 }

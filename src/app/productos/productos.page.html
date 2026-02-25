@@ -1,14 +1,19 @@
 <ion-content *ngIf="producto" [fullscreen]="true">
 
-  <div class="back-button-float">
-    <ion-button (click)="volverAtras()" fill="clear">
-      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-    </ion-button>
-  </div>
-
   <div class="header-image" [style.background-image]="'url(' + producto.imagen_url + ')'">
+    
+    <div class="back-button-float">
+      <ion-button (click)="volverAtras()" fill="clear">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </div>
+
+    <div class="fav-button-float" [class.active]="esFavorito" (click)="toggleFavorito()">
+      <ion-icon [name]="esFavorito ? 'heart' : 'heart-outline'"></ion-icon>
+    </div>
+
     <div class="discount-badge" *ngIf="producto.precio_original">
-      {{ (((producto.precio_original - producto.precio_actual) / producto.precio_original) * 100).toFixed(0) }}% DTO
+      -{{ (((producto.precio_original - producto.precio_actual) / producto.precio_original) * 100).toFixed(0) }}% DTO
     </div>
   </div>
 
@@ -30,13 +35,17 @@
       <span class="old-price" *ngIf="producto.precio_original">{{ producto.precio_original }}€</span>
     </div>
 
-    <div class="long-description-container" *ngIf="producto?.descripcion_larga">
-      <h3 class="section-title">Detalles de la oferta</h3>
+    <div class="details-card" *ngIf="producto?.descripcion_larga">
+      <div class="details-header">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <h3>Detalles de la oferta</h3>
+      </div>
       <p class="description-long">{{ producto.descripcion_larga }}</p>
     </div>
 
-    <ion-button expand="block" color="primary" class="ion-margin-top btn-action">
+    <ion-button expand="block" color="primary" class="ion-margin-top btn-action" (click)="anadirAlCarrito()">
       AÑADIR AL CARRITO
     </ion-button>
   </div>
+
 </ion-content>
