@@ -332,4 +332,10 @@ export class Tab4Page implements OnInit {
     }
   }
 
+  // SE EJECUTA CADA VEZ QUE LA PESTAÑA SE VUELVE ACTIVA
+  async ionViewWillEnter() {
+    console.log('Tab4 entrando... refrescando favoritos');
+    await this.cargarFavoritos();
+  }
+
 }
