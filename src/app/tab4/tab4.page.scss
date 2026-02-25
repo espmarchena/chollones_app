@@ -249,12 +249,12 @@ ion-searchbar {
 
     ion-icon {
       font-size: 18px;
-      color: white;
+      color:white !important;
     }
 
     &.active {
       ion-icon {
-        color: var(--ion-color-primary) !important; // Rojo cuando es favorito
+        color: black !important;;
       }
     }
 
