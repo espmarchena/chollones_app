@@ -1,8 +1,4 @@
-#map {
-  height: 100%;
-  width: 100%;
-  min-height: 300px; /* Asegura que tenga espacio */
-}
+#map { width: 100%; height: 100%; min-height: 300px; }
 
 /* 🔥 CLAVE: cuando el tab no está activo, que no capture eventos */
 :host(.ion-page-hidden) #map,
@@ -47,5 +43,19 @@
       cursor: pointer;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+    /* ✅ Asegura altura real en Ionic (Android) */
+:host, ion-content, .ion-page, ion-router-outlet {
+  height: 100%;
+}
+
+ion-content::part(scroll) {
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+}
   }
 }

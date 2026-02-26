@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 
 import { Geolocation } from '@capacitor/geolocation';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-mapa',
@@ -17,7 +18,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
   imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent]
 })
 export class MapaPage implements OnInit {
-  map!: L.Map;
+  map?: L.Map;
   chollos: any[] = [];
 
   // Usuario + radio
@@ -25,47 +26,90 @@ export class MapaPage implements OnInit {
   userCircle?: L.Circle;
   watchId?: string;
 
-  // ✅ Config pedida
+  // Config
   RADIUS_METERS = 500;               // 500m
-  COOLDOWN_MS = 20 * 60 * 1000;      // 20 min sin repetir el mismo chollo
+  COOLDOWN_MS = 20 * 60 * 1000;      // 20 min
   notified = new Map<string, number>();
 
+  // Última posición (sirve para web + native)
+  private lastCoords?: { lat: number; lng: number };
+
   constructor(
-    private location: LocationService,
+    private location: LocationService, // lo dejamos por si lo usas en otras partes
     private supabase: SupabaseService,
     private router: Router
   ) {}
 
-  async ngOnInit() {
-    await this.configurarIconos();
+async ngOnInit() {
+  await this.configurarIconos();
 
-    // Permisos notificaciones
+  // Cargar chollos
+  await this.obtenerChollos();
+
+  // Mapa ya visible (fallback)
+  this.createMap(37.3891, -5.9845);
+
+  if (Capacitor.isNativePlatform()) {
     await LocalNotifications.requestPermissions();
+    await Geolocation.requestPermissions();
 
-    // (Opcional) abrir detalle al tocar notificación
-(LocalNotifications as any).addListener('localNotificationActionPerformed', (event: any) => {
-  const id = event?.notification?.extra?.cholloId;
-  if (id) this.irADetalle(String(id));
-});
-
+    // ✅ Posición inicial real (centra ya)
     try {
-      const coords = await this.location.getPosition();
-      this.initMap(coords.latitude, coords.longitude);
+      const pos = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      });
+
+      const { latitude, longitude } = pos.coords;
+      this.updateUserUI(latitude, longitude);
+      this.checkChollosCerca(latitude, longitude);
     } catch (e) {
-      console.error('Error GPS, usando por defecto', e);
-      this.initMap(37.3891, -5.9845);
+      console.warn('No se pudo obtener ubicación inicial', e);
     }
 
-    // Cargar chollos de Supabase
-    await this.obtenerChollos();
+    // ✅ Seguimiento continuo (te sigue siempre)
+    await this.startTrackingNative();
+  } else {
+    this.startTrackingWeb();
+  }
 
-    // ✅ Seguir ubicación siempre + notificar por radio
-    await this.startTracking();
+
+  }
+
+  ionViewDidEnter() {
+    // Recalcula tamaño al entrar en el tab (Ionic/Leaflet)
+    setTimeout(() => this.map?.invalidateSize(true), 300);
   }
 
   ionViewWillLeave() {
-    if (this.watchId) Geolocation.clearWatch({ id: this.watchId });
+    // Para de trackear en native al salir
+    if (Capacitor.isNativePlatform() && this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+      this.watchId = undefined;
+    }
   }
+private updateUserUI(latitude: number, longitude: number) {
+  if (!this.map) return;
+
+  const latlng: [number, number] = [latitude, longitude];
+
+  if (!this.userMarker) {
+    this.userMarker = L.marker(latlng).addTo(this.map).bindPopup('Tú estás aquí');
+  } else {
+    this.userMarker.setLatLng(latlng);
+  }
+
+  if (!this.userCircle) {
+    this.userCircle = L.circle(latlng, { radius: this.RADIUS_METERS }).addTo(this.map);
+  } else {
+    this.userCircle.setLatLng(latlng);
+    this.userCircle.setRadius(this.RADIUS_METERS);
+  }
+
+  this.map.setView(latlng, 16, { animate: true }); // zoom más cercano
+
+}
 
   async obtenerChollos() {
     try {
@@ -80,7 +124,6 @@ export class MapaPage implements OnInit {
 
       if (data && Array.isArray(data)) {
         this.chollos = data;
-        this.pintarMarcadores();
       }
     } catch (e) {
       console.error('Error final en mapa:', e);
@@ -88,6 +131,9 @@ export class MapaPage implements OnInit {
   }
 
   pintarMarcadores() {
+    if (!this.map) return;
+    const map = this.map;
+
     this.chollos.forEach(chollo => {
       const latitud = chollo.proveedores?.lat;
       const longitud = chollo.proveedores?.lng;
@@ -109,39 +155,34 @@ export class MapaPage implements OnInit {
         `;
 
         const btn = popupContent.querySelector('.popup-btn');
-        btn?.addEventListener('click', () => this.irADetalle(chollo.id));
+        btn?.addEventListener('click', () => this.irADetalle(String(chollo.id)));
 
-        L.marker([latitud, longitud])
-          .addTo(this.map)
-          .bindPopup(popupContent);
+        L.marker([latitud, longitud]).addTo(map).bindPopup(popupContent);
       }
     });
   }
 
-  private initMap(lat: number, lng: number) {
-    const mapOptions: any = {
-      tap: false,
-      wheelDebounceTime: 150
-    };
+  private createMap(lat: number, lng: number) {
+    // Evita error: "Map container is already initialized"
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined;
+    }
 
+    const mapOptions: any = { tap: false, wheelDebounceTime: 150 };
     this.map = L.map('map', mapOptions).setView([lat, lng], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap'
     }).addTo(this.map);
 
-    // ✅ Guardamos marker del usuario (para reutilizar en tracking)
-    this.userMarker = L.marker([lat, lng])
-      .addTo(this.map)
-      .bindPopup('Tú estás aquí')
-      .openPopup();
-
-    // ✅ Círculo del radio 500m
+    // Marker usuario + círculo
+    this.userMarker = L.marker([lat, lng]).addTo(this.map).bindPopup('Tú estás aquí');
     this.userCircle = L.circle([lat, lng], { radius: this.RADIUS_METERS }).addTo(this.map);
 
-    setTimeout(() => {
-      this.map.invalidateSize();
-    }, 500);
+    this.pintarMarcadores();
+
+    setTimeout(() => this.map?.invalidateSize(true), 800);
   }
 
   private configurarIconos() {
@@ -155,26 +196,72 @@ export class MapaPage implements OnInit {
     L.Marker.prototype.options.icon = iconDefault;
   }
 
-  // ✅ Tracking continuo + mapa te sigue siempre (panTo)
-  async startTracking() {
-    await Geolocation.requestPermissions();
+  // ==========================
+  // ✅ TRACKING NATIVE (ANDROID/IOS)
+  // ==========================
+  async startTrackingNative() {
+  const perm = await Geolocation.requestPermissions();
+  console.log('GEO perms:', perm);
 
-    this.watchId = await Geolocation.watchPosition(
-      { enableHighAccuracy: true, maximumAge: 1500, timeout: 10000 },
-      (pos, err) => {
-        if (err || !pos) return;
+  this.watchId = await Geolocation.watchPosition(
+    { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+    (pos, err) => {
+      if (err) {
+        console.warn('watchPosition ERROR:', err);
+        return;
+      }
+      if (!pos) {
+        console.warn('watchPosition: pos null');
+        return;
+      }
 
+      console.log('watchPosition POS:', pos.coords);
+
+      const { latitude, longitude, accuracy } = pos.coords;
+      this.lastCoords = { lat: latitude, lng: longitude };
+
+      if (!this.map) this.createMap(latitude, longitude);
+
+      this.updateUserUI(latitude, longitude);
+      this.checkChollosCerca(latitude, longitude);
+
+      // si quieres ver precisión
+      console.log('accuracy:', accuracy);
+    }
+  );
+
+  console.log('watchId:', this.watchId);
+}
+  // ==========================
+  // ✅ TRACKING WEB (NAVEGADOR)
+  // ==========================
+  startTrackingWeb() {
+    // Si el navegador soporta geolocalización
+    if (!navigator.geolocation) {
+      // fallback
+      this.createMap(36.514677, -4.887499);
+      return;
+    }
+
+    navigator.geolocation.watchPosition(
+      (pos) => {
         const { latitude, longitude } = pos.coords;
+        this.lastCoords = { lat: latitude, lng: longitude };
+
+        // crear mapa primera vez
+        if (!this.map) {
+          this.createMap(latitude, longitude);
+        }
+
+        if (!this.map) return;
         const latlng: [number, number] = [latitude, longitude];
 
-        // Marker usuario
         if (!this.userMarker) {
           this.userMarker = L.marker(latlng).addTo(this.map).bindPopup('Tú estás aquí');
         } else {
           this.userMarker.setLatLng(latlng);
         }
 
-        // Círculo radio
         if (!this.userCircle) {
           this.userCircle = L.circle(latlng, { radius: this.RADIUS_METERS }).addTo(this.map);
         } else {
@@ -182,12 +269,16 @@ export class MapaPage implements OnInit {
           this.userCircle.setRadius(this.RADIUS_METERS);
         }
 
-        // ✅ mapa te sigue siempre
         this.map.panTo(latlng, { animate: true });
 
-        // ✅ comprobar chollos cercanos y notificar
-        this.checkChollosCerca(latitude, longitude);
-      }
+        // En web NO lanzamos notificación de Capacitor (solo console log)
+        this.checkChollosCercaWeb(latitude, longitude);
+      },
+      () => {
+        // si falla la ubicación en web
+        this.createMap(36.514677, -4.887499);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 1500 }
     );
   }
 
@@ -208,6 +299,7 @@ export class MapaPage implements OnInit {
     return 2 * R * Math.asin(Math.sqrt(x));
   }
 
+  // ✅ NATIVE: notificación real
   async checkChollosCerca(userLat: number, userLng: number) {
     if (!this.chollos?.length) return;
 
@@ -228,6 +320,7 @@ export class MapaPage implements OnInit {
       this.notified.set(id, now);
 
       const nombre = chollo.titulo ?? 'Chollo cerca';
+
       await LocalNotifications.schedule({
         notifications: [
           {
@@ -241,8 +334,23 @@ export class MapaPage implements OnInit {
     }
   }
 
+  // ✅ WEB: no LocalNotifications, solo log
+  checkChollosCercaWeb(userLat: number, userLng: number) {
+    if (!this.chollos?.length) return;
+
+    for (const chollo of this.chollos) {
+      const lat = chollo.proveedores?.lat;
+      const lng = chollo.proveedores?.lng;
+      if (!lat || !lng) continue;
+
+      const d = this.distanceMeters(userLat, userLng, lat, lng);
+      if (d > this.RADIUS_METERS) continue;
+
+      console.log(`(WEB) 🔥 Chollo cerca: ${chollo.titulo} a ${Math.round(d)}m`);
+    }
+  }
+
   irADetalle(id: string) {
-    console.log('Navegando al chollo desde el mapa:', id);
     this.router.navigate(['/tabs/producto', id]);
   }
 }
