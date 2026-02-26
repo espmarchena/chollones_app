@@ -286,7 +286,6 @@ export class Tab4Page implements OnInit {
     const lat = chollo.lat;
     const lng = chollo.lng;
 
-    // HE CORREGIDO TUS URLS. La que tenías de googleusercontent no iba a funcionar.
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     const appleMapsUrl = `maps://maps.apple.com/?daddr=${lat},${lng}`;
 
